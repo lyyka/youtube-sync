@@ -1,0 +1,125 @@
+body{
+	position: relative;
+	font-family: 'Dosis', sans-serif !important;
+	margin: 0;
+}
+#page-header{
+	color:white;
+	background: #262626;
+	padding-top:15px;
+	padding-bottom:15px;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.section-background{
+	position: relative;
+	/* The image used */
+    background-image: url("/images/header-image.jpg");
+
+    /* Set a specific height */
+    height: 100%; 
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+#header-text-wrapper{
+	background-color: white;
+	padding: 25px 25px; 
+	width:auto;
+}
+#header-wrapper-outter{
+	padding: 200px 50px;
+}
+.red-text{
+	color:red;
+}
+.section{
+	padding: 25px 25px;
+}
+.input{
+	padding: 10px 10px;
+	outline: none;
+	border: 1px solid #d2d2d2;
+	width: 100%;
+	font-size: 20px;
+	-ms-transition:border,0.4s;
+	-moz-transition:border,0.4s;
+	-webkit-transition:border,0.4s;
+	transition:border,0.4s;
+}
+.input:focus{
+	border: 1px solid #262626;
+}
+#video-wrapper{
+	text-align: center;
+	position: relative;
+	widows: 100%;
+	height: 500px;
+}
+#video{
+	width:100%;
+	height: 500px;
+}
+#controls-wrapper{
+	position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+   	background-color: #262626;
+}
+#controls button{
+	margin: 0;
+	color: white;
+	padding: 10px 10px;
+	border: none;
+	outline: none;
+	background-color:#262626;
+	-ms-transition:background-color,0.4s;
+	-moz-transition:background-color,0.4s;
+	-webkit-transition:background-color,0.4s;
+	transition:background-color,0.4s;
+}
+#controls button:hover{
+	cursor: pointer;
+	background-color:#444444;
+}
+#controls{
+	float: left;
+}
+#about-wrapper-outter{
+	position: relative;
+}
+#about-wrapper{
+	font-size: 30px;
+}
+#footer{
+	width: 100%;
+	background: #262626;
+	color: white;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+#footer .container .row .col-md-4{
+	text-align: center;
+}
+#footer a{
+	text-align: center;
+	color: white;
+	-ms-transition:color,0.4s;
+	-moz-transition:color,0.4s;
+	-webkit-transition:color,0.4s;
+	transition:color,0.4s;
+}
+#footer a:hover{
+	text-decoration: none;
+	color: red;
+}
+@media screen and (max-width: 770px){
+	#footer .container .row .col-md-4{
+		margin-bottom: 10px;
+	}
+}
