@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Create Room</title>
+	<!-- font -->
+	<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+	<!-- font awesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- css -->
+	<link rel = "stylesheet" href = "/css/create_room.css">
+	<link rel = "stylesheet" href = "/css/footer.css">
+	<link rel = "stylesheet" href = "/css/general.css">
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+</head>
+	<body>
+		<div id = "creation-div" class = "extended-section">
+			<div class = "container">
+				<h3 align="center" class = "red-text">ROOM CODE GENERATOR</h3>
+				<div class = "row">
+					<div class = "col-md-10">
+						<input id = "room-code-input" type = "text" placeholder="Room code">
+					</div>
+					<div class = "col-md-2">
+						<button id = "copy-room-code" type = "button" class = "my-btn full-w fill-red">Copy</button>
+					</div>
+				</div>
+				<label id = "feedback"></label>
+				<br>
+				<button id = "generate-room-code" type = "button" class = "my-btn full-w fill-black">GENERATE NEW ROOM CODE</button>
+			</div>
+		</div>
+		<div id = "footer" class = "section">
+			<div class = "container">
+				<div class = "row">
+					<div class = "col-md-4">
+						<a target = "_blank" href = "https://www.github.com/lyyka"><i class = "fa fa-github"></i> GitHub</a>
+					</div>
+					<div class = "col-md-4">
+						<a target = "_blank" href = "https://www.facebook.com/luka.robajac00"><i class = "fa fa-facebook"></i> Facebook</a>
+					</div>
+					<div class = "col-md-4">
+						<a target = "_blank" href = "https://www.instagram.com/robajaac"><i class = "fa fa-instagram"></i> Instagram</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- scripts -->
+		<!-- jquery -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- bootstrap -->
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+		<!-- socket io -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js" integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0=" crossorigin="anonymous"></script>
+		<script src = "/js/footer.js"></script>
+		<script src = "/js/create_room.js"></script>
+	</body>
+</html>

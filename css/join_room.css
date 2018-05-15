@@ -1,0 +1,8 @@
+.extended-section{
+	padding: 250px 50px;
+}
+#joining-div{
+	height: 100%;
+	position: relative;
+	background-image: url("/images/header-image.jpg");
+}

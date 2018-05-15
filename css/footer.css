@@ -1,0 +1,29 @@
+#footer{
+	width: 100%;
+	background: #262626;
+	color: white;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+#footer .container .row .col-md-4{
+	text-align: center;
+}
+#footer a{
+	text-align: center;
+	color: white;
+	font-size: 20px;
+	-ms-transition:color,0.4s;
+	-moz-transition:color,0.4s;
+	-webkit-transition:color,0.4s;
+	transition:color,0.4s;
+}
+#footer a:hover{
+	text-decoration: none;
+	color: red;
+}
+@media screen and (max-width: 770px){
+	#footer .container .row .col-md-4{
+		margin-bottom: 10px;
+	}
+}

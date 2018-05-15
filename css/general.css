@@ -1,0 +1,59 @@
+body{
+	position: relative;
+	font-family: 'Dosis', sans-serif !important;
+	margin: 0;
+	overflow-x: hidden;
+}
+button:hover{
+	cursor: pointer;
+}
+input{
+	padding: 15px 15px;
+	outline: none;
+	border: 1px solid #d2d2d2;
+	width: 100%;
+	font-size: 20px !important;
+	-ms-transition:border,0.4s;
+	-moz-transition:border,0.4s;
+	-webkit-transition:border,0.4s;
+	transition:border,0.4s;
+}
+input:focus{
+	border: 1px solid #262626;
+}
+.my-btn{
+	padding: 15px 15px;
+	font-size: 20px;
+	border: none;
+	outline: none;
+	-ms-transition:color,0.4s;
+	-moz-transition:color,0.4s;
+	-webkit-transition:color,0.4s;
+	transition:color,0.4s;
+}
+.fill-black{
+	color: white;
+	background-color: #262626;
+}
+.fill-red{
+	color: #262626;
+	background-color: red;
+}
+.section{
+	padding: 50px 50px;
+}
+.red-text{
+	color: red;
+}
+.center-div{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: -webkit-translate(-50%,-50%);
+	transform: -moz-translate(-50%,-50%);
+	transform: -ms-translate(-50%,-50%);
+	transform: translate(-50%,-50%);
+}
+.full-w{
+	width: 100%;
+}

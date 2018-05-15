@@ -1,0 +1,13 @@
+#creation-div{
+	height: 100%;
+	position: relative;
+	background-image: url("/images/header-image.jpg");
+}
+.extended-section{
+	padding: 250px 50px;
+}
+#feedback{
+	display: none;
+	color: green;
+	font-size: 20px;
+}
