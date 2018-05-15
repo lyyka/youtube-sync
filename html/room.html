@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Room</title>
 	<!-- font -->
 	<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
@@ -13,16 +14,31 @@
 </head>
 <body>
 	<div class = "section container">
+		
 		<h1 align="center">Choose a video to play</h1><br>
 		<input id = "embed-url" class = "input" type = "text" placeholder="Video embed URL">
 		<br><br>
 		<div id = "video-wrapper">
-			<iframe id = "video" src="https://www.youtube.com/embed/1vLkX_BYzhg?autoplay=0&controls=0&enablejsapi=1" frameborder="0"></iframe>
+			<div id = "video"></div>
 			<div id = "controls-wrapper">
 				<div id = "controls">
 					<button type = "button" id = "play-btn"><i class="fa fa-play"></i></button>
 					<button type = "button" id = "pause-btn"><i class="fa fa-pause"></i></button>
 				</div>
+			</div>
+		</div>
+		<hr>
+		<div>
+			<h3 class = "section-header">Events<span class = "float-right"><i class = "icon fa fa-angle-down"></i></h3>
+			<div id = "notification-list" class = "dropdown">
+				
+			</div>
+		</div>
+		<br>
+		<div>
+			<h3 class = "section-header">Users<span class = "float-right"><i class = "fa fa-angle-down"></i></span></h3>
+			<div id = "users-list" class = "dropdown">
+				
 			</div>
 		</div>
 	</div>
@@ -34,6 +50,7 @@
 	<!-- socket io -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js" integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0=" crossorigin="anonymous"></script>
 	<!-- room js -->
+	<script src = "https://www.youtube.com/iframe_api"></script>
 	<script src = "/js/room.js"></script>
 	<script src = "/js/footer.js"></script>
 </body>

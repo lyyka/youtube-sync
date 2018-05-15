@@ -34,3 +34,34 @@
 #controls{
 	float: left;
 }
+#notification-list, #users-list{
+	display: none;
+	height: 350px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.section-header{
+	padding: 10px 10px;
+	background-color: red;
+	color: white;
+	text-align: center;
+	-ms-transition:background-color,0.4s;
+	-moz-transition:background-color,0.4s;
+	-webkit-transition:background-color,0.4s;
+	transition:background-color,0.4s;
+}
+.section-header:hover{
+	cursor: pointer;
+	background-color: rgb(150,0,0);
+}
+.card{
+	text-align: center;
+	width: 100%;
+	color: white;
+	background-color: #262626;
+	padding: 10px 10px;
+	font-size: 20px;
+}
+.float-right{
+	float: right;
+}

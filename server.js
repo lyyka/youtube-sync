@@ -1,6 +1,5 @@
 var files = require('fs');
 var url = require('url');
-const safeStringify = require('fast-safe-stringify')
 // express
 var express = require('express');
 var app = express();
@@ -15,10 +14,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-var last_client = null;
-
 server.listen(80);
 
+var starting_url = "https://www.youtube.com/embed/1vLkX_BYzhg";
 var rooms = {};
 
 app.get("/",function(req,res){
@@ -34,66 +32,88 @@ app.get("/",function(req,res){
 		res.end();
 	});
 });
-// plays video for all
-app.post("/play",function(req,res){
-	io.emit("control",{control: "play"});
-	res.end();
-});
-// pauses video for all
-app.post("/pause",function(req,res){
-	io.emit("control",{control: "pause"});
-	res.end();
-});
 io.on("connection",function(socket){
 	// changes vide url for all users in a room
 	socket.on("change url",function(data,fn){
-		io.emit("change embed url",{url: data.url});
-		fn(null);
+		rooms[data.room].currVideo = data.url;
+		socket.broadcast.to(data.room).emit("change embed url",{url: data.url, user: data.user, time: PrintTimeStamp()});
+		console.log(data.user + " has changed the video in " + data.room + " @ " + PrintTimeStamp());
+		fn({feedback: "You changed the video id to: " + parse_yt_url(data.url), time: PrintTimeStamp()});
 	});
 	// play video
 	socket.on("play video",function(data,fn){
-		socket.broadcast.to(data.room).emit("control",{user: data.username, control: "play"});
-		fn(null);
+		socket.broadcast.to(data.room).emit("control",{user: data.username, control: "play", time: PrintTimeStamp()});
+		console.log(data.username + " has played the video in " + socket.room + " @ " + PrintTimeStamp());
+		fn({feedback: "You have played the video", time: PrintTimeStamp()});
 	});
 	socket.on("pause video",function(data,fn){
-		socket.broadcast.to(data.room).emit("control",{user: data.username, control: "pause"});
-		fn(null);
+		socket.broadcast.to(data.room).emit("control",{user: data.username, control: "pause", time: PrintTimeStamp()});
+		console.log(data.username + " has paused the video in " + socket.room + " @ " + PrintTimeStamp());
+		fn({feedback: "You have paused the video", time: PrintTimeStamp()});
 	});
 	// generates new room
 	socket.on("generate-room-code",function(fn){
 		var generated = false;
-		var room_code = "";
+		var room = "";
 		while(!generated){
 			var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 			for (var i = 0; i < 7; i++)
-				room_code += possible.charAt(Math.floor(Math.random() * possible.length));
+				room += possible.charAt(Math.floor(Math.random() * possible.length));
 
-			if(rooms[room_code] == null){
+			if(rooms[room] == null){
 				generated = true;
 			}
 		}
-		rooms[room_code] = [];
-		console.log("Generated new room: " + room_code + " @ " + PrintTimeStamp());
-		fn(room_code);
+		rooms[room] = {users: [], currVideo: starting_url};
+		console.log("Generated new room: " + room + " @ " + PrintTimeStamp());
+		fn(room);
 	});
 	// adds user to the room
 	socket.on("join room",function(data,fn){
 		var room = data.room;
 		var username = data.username;
 		if(rooms[room] != null){
-			socket.username = username;
-			socket.room = room;
-			rooms[room].push(username);
-			socket.join(room);
-        	socket.broadcast.to(room).emit('notification', username + ' has connected to this room');
-        	fn(1);
+			if(!rooms[room].users.includes(username)){
+				socket.username = username;
+				socket.room = room;
+				rooms[room].users.push(username);
+				console.log(rooms[room].users);
+				socket.join(room);
+	        	socket.broadcast.to(room).emit('joined', { message: username + ' joined', user: username, time: PrintTimeStamp()});
+	        	console.log(username + " has joind the room " + room + " @ " + PrintTimeStamp());
+	        	fn({status: 1, videoUrl: rooms[room].currVideo, usersList: rooms[room].users, message: "You joined the room!", time: PrintTimeStamp()});
+			}
+			else{
+				fn({status: 0, time: null});
+			}
 		}
 		else{
-			fn(null);
+			fn({status: -1, time: null});
 		}
 	});
+	// when user leaves the room
+	socket.on("leave room",function(data){
+		if(rooms[data.room] != null){
+			var room = data.room;
+			var index = rooms[room].users.indexOf(data.user);
+			if(index > -1){
+				socket.broadcast.to(room).emit("left",{message: data.user + " left", user: data.user, time: PrintTimeStamp()});
+				socket.leave(room);
+				socket.username = "";
+				socket.room = "";
+				socket.disconnect(0);
+				rooms[room].users.splice(index,1);
+				console.log(rooms[room].users);
+			}
+		}
+	});
+
 });
+function parse_yt_url(url){
+	var start = url.lastIndexOf('/');
+	return url.substring(start+1);
+}
 function PrintTimeStamp(){
 	var dt = new Date();
 	var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
