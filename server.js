@@ -16,11 +16,37 @@ app.use(bodyParser.json());
 
 server.listen(80);
 
-var starting_url = "https://www.youtube.com/embed/1vLkX_BYzhg";
+var starting_url = "https://www.youtube.com/watch?v=1vLkX_BYzhg";
 var rooms = {};
 
 app.get("/",function(req,res){
 	files.readFile("index.html",function(err,data){
+		if(err){
+			res.writeHead(404,{"Content-Type": "text/html"});
+			res.write("404 Not Found");
+		}
+		else{
+			res.writeHead(200,{"Content-Type": "text/html"});
+			res.write(data);
+		}
+		res.end();
+	});
+});
+app.get("/create",function(req,res){
+	files.readFile("html/create_room.html",function(err,data){
+		if(err){
+			res.writeHead(404,{"Content-Type": "text/html"});
+			res.write("404 Not Found");
+		}
+		else{
+			res.writeHead(200,{"Content-Type": "text/html"});
+			res.write(data);
+		}
+		res.end();
+	});
+});
+app.get("/join",function(req,res){
+	files.readFile("html/join_room.html",function(err,data){
 		if(err){
 			res.writeHead(404,{"Content-Type": "text/html"});
 			res.write("404 Not Found");
@@ -42,14 +68,26 @@ io.on("connection",function(socket){
 	});
 	// play video
 	socket.on("play video",function(data,fn){
+		rooms[data.room].state = "playing";
 		socket.broadcast.to(data.room).emit("control",{user: data.username, control: "play", time: PrintTimeStamp()});
 		console.log(data.username + " has played the video in " + socket.room + " @ " + PrintTimeStamp());
 		fn({feedback: "You have played the video", time: PrintTimeStamp()});
 	});
+	// pause video
 	socket.on("pause video",function(data,fn){
+		rooms[data.room].state = "paused";
 		socket.broadcast.to(data.room).emit("control",{user: data.username, control: "pause", time: PrintTimeStamp()});
 		console.log(data.username + " has paused the video in " + socket.room + " @ " + PrintTimeStamp());
 		fn({feedback: "You have paused the video", time: PrintTimeStamp()});
+	});
+	// while the video is playing get it's current time so when someone connects, he starts from the time others are listening at the moment
+	socket.on("update video time",function(data){
+		if(data.videoTime != null && data.room != null){
+			var room = data.room;
+			if(rooms[room] != null){
+				rooms[room].currTime = data.videoTime;
+			}
+		}
 	});
 	// generates new room
 	socket.on("generate-room-code",function(fn){
@@ -65,8 +103,9 @@ io.on("connection",function(socket){
 				generated = true;
 			}
 		}
-		rooms[room] = {users: [], currVideo: starting_url};
+		rooms[room] = {users: [], currVideo: starting_url, currTime: 0, state: "paused"};
 		console.log("Generated new room: " + room + " @ " + PrintTimeStamp());
+		console.log(rooms);
 		fn(room);
 	});
 	// adds user to the room
@@ -78,11 +117,10 @@ io.on("connection",function(socket){
 				socket.username = username;
 				socket.room = room;
 				rooms[room].users.push(username);
-				console.log(rooms[room].users);
 				socket.join(room);
-	        	socket.broadcast.to(room).emit('joined', { message: username + ' joined', user: username, time: PrintTimeStamp()});
+	        	socket.broadcast.to(room).emit('joined', { message: username + ' joined', users_list: rooms[room].users, time: PrintTimeStamp()});
 	        	console.log(username + " has joind the room " + room + " @ " + PrintTimeStamp());
-	        	fn({status: 1, videoUrl: rooms[room].currVideo, usersList: rooms[room].users, message: "You joined the room!", time: PrintTimeStamp()});
+	        	fn({status: 1, videoUrl: rooms[room].currVideo, videoTime: rooms[room].currTime, state: rooms[room].state, usersList: rooms[room].users, message: "You joined the room!", time: PrintTimeStamp()});
 			}
 			else{
 				fn({status: 0, time: null});
@@ -98,20 +136,24 @@ io.on("connection",function(socket){
 			var room = data.room;
 			var index = rooms[room].users.indexOf(data.user);
 			if(index > -1){
-				socket.broadcast.to(room).emit("left",{message: data.user + " left", user: data.user, time: PrintTimeStamp()});
+				socket.broadcast.to(room).emit("left",{message: data.user + " left", users_list: rooms[room].users, time: PrintTimeStamp()});
 				socket.leave(room);
 				socket.username = "";
 				socket.room = "";
 				socket.disconnect(0);
 				rooms[room].users.splice(index,1);
-				console.log(rooms[room].users);
+				console.log(data.user + " has left the room " + room + " @ " + PrintTimeStamp());
+				if(rooms[room].users.length == 0){
+					delete rooms[room];
+					console.log("Room " + room + " deleted (all memebers left)");
+				}
 			}
 		}
 	});
 
 });
 function parse_yt_url(url){
-	var start = url.lastIndexOf('/');
+	var start = url.lastIndexOf('=');
 	return url.substring(start+1);
 }
 function PrintTimeStamp(){

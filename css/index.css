@@ -20,39 +20,6 @@
 	padding-top: 250px;
 	padding-bottom: 250px;
 }
-.screen-part:nth-child(odd){
-	background-color: white;
-}
-.screen-part:nth-child(even){
-	background-color: #262626;
-}
-button.button{
-	padding: 15px 15px;
-	font-size: 50px;
-	background-color: rgba(0,0,0,0);
-	border: none;
-	outline: none;
-	-ms-transition:color,0.4s;
-	-moz-transition:color,0.4s;
-	-webkit-transition:color,0.4s;
-	transition:color,0.4s;
-}
-.button.red{
-	border:3px solid red;
-	color: red;
-}
-.button.red:hover{
-	background-color: red;
-	color: #262626;
-}
-.button.black{
-	border: 3px solid #262626;
-	color: #262626;
-}
-.button.black:hover{
-	background-color: #262626;
-	color: white;
-}
 #header-text-wrapper{
 	background-color: white;
 	padding: 25px 25px; 

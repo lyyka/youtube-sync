@@ -1,0 +1,69 @@
+/*for all*/
+.transitions{
+	-ms-transition:color,0.4s;
+	-moz-transition:color,0.4s;
+	-webkit-transition:color,0.4s;
+	transition:color,0.4s;
+}
+/*for other pages*/
+.menu-part{
+	padding: 25px 25px;
+	text-align: center;
+}
+.menu-part:hover{
+	cursor: pointer;
+}
+.menu-part.black a{
+	font-size: 30px;
+	color: red;
+}
+.menu-part.white a{
+	font-size: 30px;
+	color: #262626;
+}
+.menu-part.black{
+	background-color: #262626;
+	color: red;
+}
+/*.menu-part.black:hover{
+	background-color: white;
+	color: #262626;
+}*/
+.menu-part.white{
+	background-color: white;
+	color: #262626;
+}
+/*.menu-part.white:hover{
+	background-color: #262626;
+	color: red;
+}*/
+/*for index page*/
+.black-bg{
+	background-color: #262626;
+}
+.white-bg{
+	background-color: white;
+}
+button.button{
+	padding: 15px 15px;
+	font-size: 50px;
+	background-color: rgba(0,0,0,0);
+	border: none;
+	outline: none;
+}
+.button.red{
+	border:3px solid red;
+	color: red;
+}
+.button.red:hover{
+	background-color: red;
+	color: #262626;
+}
+.button.black{
+	border: 3px solid #262626;
+	color: #262626;
+}
+.button.black:hover{
+	background-color: #262626;
+	color: white;
+}

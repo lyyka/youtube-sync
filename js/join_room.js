@@ -1,7 +1,3 @@
-var socket = io.connect("http://192.168.1.4");
-socket.on("notification",function(sender,data){
-	alert(sender + ":" + data);
-});
 $(document).ready(function(){
 	$("#join-room").click(function(){
 		var username = $("#username-input").val();

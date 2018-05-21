@@ -15,7 +15,7 @@
     width:100%;
    	background-color: #262626;
 }
-#controls button{
+#controls button,label{
 	margin: 0;
 	color: white;
 	padding: 10px 10px;
@@ -27,7 +27,7 @@
 	-webkit-transition:background-color,0.4s;
 	transition:background-color,0.4s;
 }
-#controls button:hover{
+#controls button:hover, #controls label:hover{
 	cursor: pointer;
 	background-color:#444444;
 }
@@ -57,10 +57,11 @@
 .card{
 	text-align: center;
 	width: 100%;
-	color: white;
-	background-color: #262626;
+	color: #262626;
+	background-color: white;
 	padding: 10px 10px;
 	font-size: 20px;
+	margin-bottom: 15px;
 }
 .float-right{
 	float: right;

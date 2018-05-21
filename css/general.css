@@ -18,6 +18,7 @@
     background: #555; 
 }
 body{
+	background-color: #262626;
 	position: relative;
 	font-family: 'Dosis', sans-serif !important;
 	margin: 0;
@@ -32,6 +33,7 @@ input{
 	border: 1px solid #d2d2d2;
 	width: 100%;
 	font-size: 20px !important;
+	margin-bottom: 15px !important;
 	-ms-transition:border,0.4s;
 	-moz-transition:border,0.4s;
 	-webkit-transition:border,0.4s;
