@@ -66,6 +66,9 @@ input:focus{
 .red-text{
 	color: red;
 }
+.white-text{
+	color: white;
+}
 .center-div{
 	position: absolute;
 	top: 50%;

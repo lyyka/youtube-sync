@@ -13,36 +13,46 @@
 	<link rel = "stylesheet" href = "/css/room.css">
 </head>
 <body>
-	<div class = "section container">
-		
-		<h1 align="center">Choose a video to play</h1><br>
-		<input id = "embed-url" class = "input" type = "text" placeholder="Video embed URL">
+	<h3 align="center" class = "remove-margin-bottom" id = "room-share"></h3><br>
+	<div class = "section container-fluid">
+		<h3 align="left" class = "remove-margin-bottom white-text">Choose video:</h1><br>
+		<input id = "embed-url" class = "input" type = "text" placeholder="Video URL">
 		<br><br>
-		<div id = "video-wrapper">
-			<div id = "video"></div>
-			<div id = "controls-wrapper">
-				<div id = "controls">
-					<button type = "button" id = "play-btn"><i class="fa fa-play"></i></button>
-					<button type = "button" id = "pause-btn"><i class="fa fa-pause"></i></button>
-					<label id = "videoTime">12:10</label>
+		<div class = "row">
+			<div class = "col-md-6 add-margin-bottom">
+				<div id = "video-wrapper">
+					<div id = "video"></div>
+					<div id = "controls-wrapper">
+						<div id = "controls">
+							<button type = "button" id = "play-btn"><i class="fa fa-play"></i></button>
+							<button type = "button" id = "pause-btn"><i class="fa fa-pause"></i></button>
+							<label id = "videoTime">video time</label>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-		<hr>
-		<div class = "row">
-			<div class = "col-md-6">
+			<div class = "col-md-3 add-margin-bottom">
 				<h3 class = "section-header">Events<span class = "float-right"><i class = "icon fa fa-angle-down"></i></h3>
 				<div id = "notification-list" class = "dropdown">
 					
 				</div>
 			</div>
-			<div class = "col-md-6">
+			<div class = "col-md-3 add-margin-bottom">
 				<h3 class = "section-header">Users<span class = "float-right"><i class = "fa fa-angle-down"></i></span></h3>
 				<div id = "users-list" class = "dropdown">
 					
 				</div>
 			</div>
 		</div>
+		<!-- place for events and users divs OLD -->
+<!-- 		<div class = "row">
+			<div class = "col-md-6">
+				
+			</div>
+			<div class = "col-md-6">
+				
+			</div>
+		</div> -->
 		
 	</div>
 	<!-- scripts -->

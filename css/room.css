@@ -3,6 +3,7 @@
 	position: relative;
 	widows: 100%;
 	height: 500px;
+	border: 1px solid black;
 }
 #video{
 	width:100%;
@@ -15,7 +16,7 @@
     width:100%;
    	background-color: #262626;
 }
-#controls button,label{
+#controls button, #controls label{
 	margin: 0;
 	color: white;
 	padding: 10px 10px;
@@ -49,6 +50,21 @@
 	-moz-transition:background-color,0.4s;
 	-webkit-transition:background-color,0.4s;
 	transition:background-color,0.4s;
+}
+#room-share{
+	z-index: 1;
+	padding: 10px 10px;
+	position: sticky;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: white;
+}
+.remove-margin-bottom{
+	margin-bottom: 0px;
+}
+.add-margin-bottom{
+	margin-bottom: 15px;
 }
 .section-header:hover{
 	cursor: pointer;

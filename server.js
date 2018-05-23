@@ -32,6 +32,19 @@ app.get("/",function(req,res){
 		res.end();
 	});
 });
+app.get("/room",function(req,res){
+	files.readFile("html/room.html",function(err,data){
+		if(err){
+			res.writeHead(404,{"Content-Type": "text/html"});
+			res.write("404 Not found");
+		}
+		else{
+			res.writeHead(200,{"Content-Type": "text/html"});
+			res.write(data);
+		}
+		res.end();
+	});
+});
 app.get("/create",function(req,res){
 	files.readFile("html/create_room.html",function(err,data){
 		if(err){
@@ -62,6 +75,7 @@ io.on("connection",function(socket){
 	// changes vide url for all users in a room
 	socket.on("change url",function(data,fn){
 		rooms[data.room].currVideo = data.url;
+		rooms[data.room].currTime = 0;
 		socket.broadcast.to(data.room).emit("change embed url",{url: data.url, user: data.user, time: PrintTimeStamp()});
 		console.log(data.user + " has changed the video in " + data.room + " @ " + PrintTimeStamp());
 		fn({feedback: "You changed the video id to: " + parse_yt_url(data.url), time: PrintTimeStamp()});
@@ -136,17 +150,13 @@ io.on("connection",function(socket){
 			var room = data.room;
 			var index = rooms[room].users.indexOf(data.user);
 			if(index > -1){
-				socket.broadcast.to(room).emit("left",{message: data.user + " left", users_list: rooms[room].users, time: PrintTimeStamp()});
 				socket.leave(room);
 				socket.username = "";
 				socket.room = "";
 				socket.disconnect(0);
 				rooms[room].users.splice(index,1);
 				console.log(data.user + " has left the room " + room + " @ " + PrintTimeStamp());
-				if(rooms[room].users.length == 0){
-					delete rooms[room];
-					console.log("Room " + room + " deleted (all memebers left)");
-				}
+				socket.broadcast.to(room).emit("left",{message: data.user + " left", users_list: rooms[room].users, time: PrintTimeStamp()});
 			}
 		}
 	});

@@ -29,12 +29,13 @@ socket.emit("join room",{username: username,room:room},function(data){
 		RefreshUsersList(users_list);
 		starting_time = data.videoTime;
 		starting_state = data.state;
+		$("#room-share").html("Share this room with your friends: <span class = 'red-text'>" +
+		 room + "</span>");
 	}
 });
 
 // YOUTUBE API
-// 3. This function creates an <iframe> (and YouTube player)
-//    after the API code downloads.
+
 var player;
 function onYouTubeIframeAPIReady() {
 	var video_id = parse_yt_url(starting_url);
@@ -74,16 +75,7 @@ function onPlayerReady(event) {
 	PauseVideo();
 	player.seekTo(starting_time,true);
 }
-function PlayVideo(){
-	player.playVideo();
-}
-function PauseVideo(){
-	player.pauseVideo();
-}
-function ChangeVideo(url_new){
-	url_new = parse_yt_url(url_new);
-	player.cueVideoById(url_new);
-}
+
 function onPlayerStateChange(event){
 	if (event.data == YT.PlayerState.PLAYING) {
 		if(was_buff){
@@ -104,43 +96,6 @@ function onPlayerStateChange(event){
 			ShowNotification(data.feedback,data.time);
 		});
     }
-}
-function UpdateVideoState(){
-	var resp = parseTime(player.getCurrentTime());
-	// final for current time
-	var final = "";
-	if(resp.hours > 0){
-		final += resp.hours + ":";
-	}
-	final += resp.mins + ":";
-	final += resp.secs;
-	// final for length
-	var duration = parseTime(player.getDuration());
-	var finalDuration = "";
-	if(duration.hours > 0){
-		finalDuration += duration.hours + ":";
-	}
-	finalDuration += duration.mins + ":";
-	finalDuration += duration.secs;
-	$("#videoTime").html(final + " / " + finalDuration);
-	socket.emit("update video time",{videoTime: player.getCurrentTime(), room: room});
-}
-function parseTime(seconds){
-	var hours = Math.floor(seconds/3600);
-	seconds -= hours*3600;
-	var mins = Math.floor(seconds/60);
-	seconds -= mins*60;
-	var secs = Math.floor(seconds);
-	if(hours < 10){
-		hours = "0"+hours;
-	}
-	if(mins<10){
-		mins = "0"+mins;
-	}
-	if(secs<10){
-		secs = "0"+secs;
-	}
-	return {hours: hours, mins: mins, secs: secs}
 }
 
 // END YOUTUBE API
@@ -179,23 +134,6 @@ socket.on("video state change",function(data){
 		player.seekTo(data.state,true);
 	}
 });
-
-function RefreshUsersList(users_list){
-	$("#users-list").find(".card").remove();
-	for (var i = 0; i < users_list.length; i++) {
-		AddUser(users_list[i]);
-	}
-}
-function ShowNotification(text,time){
-	$("#notification-list").append('<label class = "card">' + text + '<span class = "float-right">' + time + '</span></label>');
-}
-function AddUser(username){
-	$("#users-list").append('<label class = "card">' + username + '</label>');
-}
-function TestUrl(website){
-	return true;
-	//return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(website);
-}
 $(document).ready(function(){
 	$("title").html("Room - " + room);
 	$("body").css("padding-bottom",$("#footer").height()+50);
@@ -210,10 +148,10 @@ $(document).ready(function(){
 	$("#embed-url").on("input",function(){
 		var url_new = $("#embed-url").val();
 		if(TestUrl(url_new)){
-			ChangeVideo(url_new);
 			socket.emit("change url",{url: url_new, user: username, room: room},function(data){
 				ShowNotification(data.feedback,data.time);
 			});
+			ChangeVideo(url_new);
 		}
 	});
 	$(".section-header").click(function(){
@@ -230,17 +168,90 @@ $(document).ready(function(){
 			el.slideDown();
 		}
 	});
+	
 });
+
+function PlayVideo(){
+	player.playVideo();
+}
+function PauseVideo(){
+	player.pauseVideo();
+}
+function ChangeVideo(url_new){
+	var id = parse_yt_url(url_new);
+	player.cueVideoById(id);
+}
+function RefreshUsersList(users_list){
+	$("#users-list").find(".card").remove();
+	for (var i = 0; i < users_list.length; i++) {
+		AddUser(users_list[i]);
+	}
+}
+function ShowNotification(text,time){
+	$("#notification-list").append('<label class = "card">' + text + '<span class = "float-right">' + time + '</span></label>');
+}
+function AddUser(username){
+	$("#users-list").append('<label class = "card">' + username + '</label>');
+}
+function TestUrl(website){
+	//return true;
+	return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(website);
+}
 function closeIt()
 {
 	socket.emit("leave room",{user: username, room: room});
 }
 window.onunload = closeIt;
 window.onbeforeunload = closeIt;
-
+function UpdateVideoState(){
+	var resp = parseTime(player.getCurrentTime());
+	// final for current time
+	var final = "";
+	if(resp.hours > 0){
+		final += resp.hours + ":";
+	}
+	final += resp.mins + ":";
+	final += resp.secs;
+	// final for length
+	var duration = parseTime(player.getDuration());
+	var finalDuration = "";
+	if(duration.hours > 0){
+		finalDuration += duration.hours + ":";
+	}
+	finalDuration += duration.mins + ":";
+	finalDuration += duration.secs;
+	$("#videoTime").html(final + " / " + finalDuration);
+	socket.emit("update video time",{videoTime: player.getCurrentTime(), room: room});
+}
+function parseTime(seconds){
+	var hours = Math.floor(seconds/3600);
+	seconds -= hours*3600;
+	var mins = Math.floor(seconds/60);
+	seconds -= mins*60;
+	var secs = Math.floor(seconds);
+	if(hours < 10){
+		hours = "0"+hours;
+	}
+	if(mins<10){
+		mins = "0"+mins;
+	}
+	if(secs<10){
+		secs = "0"+secs;
+	}
+	return {hours: hours, mins: mins, secs: secs}
+}
+// returns videos id from the string
 function parse_yt_url(url){
-	var start = url.lastIndexOf('=');
-	return url.substring(start+1);
+	var start = -1;
+	if(url.indexOf('=') == -1){
+		start = url.lastIndexOf('/');
+	}
+	else{
+		start = url.lastIndexOf('=');
+	}
+	if(start != -1){
+		return url.substring(start+1);
+	}
 }
 // get username and room code from the link
 function parse_query_string(query) {

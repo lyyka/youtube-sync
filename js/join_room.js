@@ -3,7 +3,7 @@ $(document).ready(function(){
 		var username = $("#username-input").val();
 		var code = $("#room-code-input").val();
 		if(ValidateInput(username,code)){
-			window.location.replace("/html/room.html?username="+username+"&room="+code);
+			window.location.replace("/room?username="+username+"&room="+code);
 		}
 	});
 });
