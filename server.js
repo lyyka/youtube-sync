@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-server.listen(80);
+server.listen(8080);
 
 var starting_url = "https://www.youtube.com/watch?v=1vLkX_BYzhg";
 var rooms = {};

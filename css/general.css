@@ -28,7 +28,7 @@ button:hover{
 	cursor: pointer;
 }
 input{
-	padding: 15px 15px;
+	padding: 10px 10px;
 	outline: none;
 	border: 1px solid #d2d2d2;
 	width: 100%;
@@ -43,7 +43,7 @@ input:focus{
 	border: 1px solid #262626;
 }
 .my-btn{
-	padding: 15px 15px;
+	padding: 10px 10px;
 	font-size: 20px;
 	border: none;
 	outline: none;

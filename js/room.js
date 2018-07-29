@@ -11,7 +11,7 @@ var was_buff = false;
 
 var interval;
 
-var socket = io.connect('http://192.168.1.4');
+var socket = io.connect('http://localhost:8080');
 // join the user to the room
 socket.emit("join room",{username: username,room:room},function(data){
 	if(data.status == -1){
@@ -135,6 +135,10 @@ socket.on("video state change",function(data){
 	}
 });
 $(document).ready(function(){
+	FixNotificationCards();
+	// FIX URL CHANGE BUTTON
+	$("#change-btn").height($("#embed-url").height() + 2);
+	//$(".notification-card-wrapper").find(".clear-notification").height($(".notification-card-wrapper").find(".card"));
 	$("title").html("Room - " + room);
 	$("body").css("padding-bottom",$("#footer").height()+50);
 	$(window).resize(function(){
@@ -145,7 +149,7 @@ $(document).ready(function(){
 			$("body").css("padding-bottom",$("#footer").height()+50);
 		}
 	});
-	$("#embed-url").on("input",function(){
+	$("#change-btn").on("click",function(){
 		var url_new = $("#embed-url").val();
 		if(TestUrl(url_new)){
 			socket.emit("change url",{url: url_new, user: username, room: room},function(data){
@@ -154,19 +158,20 @@ $(document).ready(function(){
 			ChangeVideo(url_new);
 		}
 	});
-	$(".section-header").click(function(){
-		var el = $(this).parent("div").find(".dropdown");
-		var icon = $(this).find(".icon");
-		if(el.css("display") == "block"){
-			icon.removeClass("fa fa-angle-up");
-			icon.addClass("fa fa-angle-down");
-			el.slideUp();
-		}
-		else{
-			icon.removeClass("fa fa-angle-down");
-			icon.addClass("fa fa-angle-up");
-			el.slideDown();
-		}
+	$("#show-notify").click(function(){
+		$("#notification-list-wrapper").fadeIn(500);
+	});
+	$("#show-users").click(function(){
+		$("#users-list-wrapper").fadeIn(500);
+	});
+	// clear notification
+	// $(".clear-notification").click(function(){
+	// 	$(this).parent().eq(0).remove();
+	// });
+	$( document ).on( 'keydown', function ( e ) {
+	    if ( e.keyCode === 27) { // ESC
+			$(".ws-div").fadeOut(500);
+	    }
 	});
 	
 });
@@ -188,7 +193,26 @@ function RefreshUsersList(users_list){
 	}
 }
 function ShowNotification(text,time){
-	$("#notification-list").append('<label class = "card">' + text + '<span class = "float-right">' + time + '</span></label>');
+	$("#notification-list").append('<div class="notification-card-wrapper"><label class="card">' + text + '</label><button type="button" class="my-btn fill-red clear-notification">Clear</button></div>');
+	FixNotificationCards();
+}
+function FixNotificationCards(){
+	// FIX NOTIFICATION BUTTONS
+	var cards = $(".notification-card-wrapper");
+	for (var i = cards.length - 1; i >= 0; i--) {
+		// fix button
+		var label = cards.find(".card");
+		var button = cards.find(".clear-notification");
+		label.css("padding-right", button.width() + 5);
+		button.height(label.height()+2);
+
+		// fix margin of the card
+		var card = cards[i];
+		// alert(card);
+		//alert(card.height());
+		//card.height(label.height()+2);
+		//alert(card.height());
+	}
 }
 function AddUser(username){
 	$("#users-list").append('<label class = "card">' + username + '</label>');

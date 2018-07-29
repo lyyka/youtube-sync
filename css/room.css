@@ -14,15 +14,15 @@
     bottom:0;
     left:0;
     width:100%;
-   	background-color: #262626;
+   	background-color: white;
 }
 #controls button, #controls label{
 	margin: 0;
-	color: white;
+	color: black;
 	padding: 10px 10px;
 	border: none;
 	outline: none;
-	background-color:#262626;
+	background-color:white;
 	-ms-transition:background-color,0.4s;
 	-moz-transition:background-color,0.4s;
 	-webkit-transition:background-color,0.4s;
@@ -30,18 +30,28 @@
 }
 #controls button:hover, #controls label:hover{
 	cursor: pointer;
-	background-color:#444444;
+	background-color:#d2d2d2;
 }
 #controls{
 	float: left;
 }
-#notification-list, #users-list{
-	display: none;
+#notification-list-wrapper, #users-list-wrapper{
+	/*display: none;
 	height: 350px;
 	overflow-y: auto;
-	overflow-x: hidden;
+	overflow-x: hidden;*/
+	display: none;
+	position: fixed;
+	z-index: 1;
+	padding-top: 150px;
+	padding-bottom: 150px;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.4);
 }
-.section-header{
+/*.section-header{
 	padding: 10px 10px;
 	background-color: red;
 	color: white;
@@ -50,7 +60,7 @@
 	-moz-transition:background-color,0.4s;
 	-webkit-transition:background-color,0.4s;
 	transition:background-color,0.4s;
-}
+}*/
 #room-share{
 	z-index: 1;
 	padding: 10px 10px;
@@ -66,19 +76,52 @@
 .add-margin-bottom{
 	margin-bottom: 15px;
 }
-.section-header:hover{
+/*.section-header:hover{
 	cursor: pointer;
 	background-color: rgb(150,0,0);
+}*/
+/*notification center*/
+.notification-card-wrapper{
+	position: relative;
 }
 .card{
+	position: absolute;
+	top: 0;
+	left: 0;
 	text-align: center;
 	width: 100%;
 	color: #262626;
 	background-color: white;
-	padding: 10px 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
 	font-size: 20px;
 	margin-bottom: 15px;
 }
+.clear-notification{
+	position: absolute;top: 0;right: 0; bottom: 0;
+}
 .float-right{
 	float: right;
+}
+#icons{
+	font-size: 22px;
+}
+#icons i:hover{
+	cursor: pointer;
+}
+/*change vide input style*/
+#change-video-div{
+	position: relative;
+	margin-bottom: 40px;
+}
+#embed-url{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+#change-btn{
+	position: absolute;
+	top: 0;
+	right: 0;
 }
