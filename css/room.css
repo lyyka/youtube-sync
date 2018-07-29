@@ -85,9 +85,9 @@
 	position: relative;
 }
 .card{
-	position: absolute;
+/*	position: absolute;
 	top: 0;
-	left: 0;
+	left: 0;*/
 	text-align: center;
 	width: 100%;
 	color: #262626;
@@ -99,7 +99,10 @@
 	margin-bottom: 15px;
 }
 .clear-notification{
-	position: absolute;top: 0;right: 0; bottom: 0;
+	position: absolute;top: 0;right: 0;
+}
+#clear-all-notifications{
+	cursor: pointer;
 }
 .float-right{
 	float: right;

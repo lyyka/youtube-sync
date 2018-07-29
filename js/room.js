@@ -135,7 +135,6 @@ socket.on("video state change",function(data){
 	}
 });
 $(document).ready(function(){
-	FixNotificationCards();
 	// FIX URL CHANGE BUTTON
 	$("#change-btn").height($("#embed-url").height() + 2);
 	//$(".notification-card-wrapper").find(".clear-notification").height($(".notification-card-wrapper").find(".card"));
@@ -160,20 +159,34 @@ $(document).ready(function(){
 	});
 	$("#show-notify").click(function(){
 		$("#notification-list-wrapper").fadeIn(500);
+		FixNotificationCards();
 	});
 	$("#show-users").click(function(){
 		$("#users-list-wrapper").fadeIn(500);
 	});
-	// clear notification
-	// $(".clear-notification").click(function(){
-	// 	$(this).parent().eq(0).remove();
-	// });
+	//clear notif
+	$("#notification-list").on("click",".clear-notification",function(){
+		var button = $(this);
+		var notification_list = button.parents().eq(1);
+		button.parent().remove();
+		var wrappers = notification_list.find(".notification-card-wrapper");
+		if(wrappers.length == 0){
+			notification_list.append("<h3 align = 'center' class = 'no-notif-text white-text'>No new notifications!</h3>")
+		}
+	});
+	// CLEAR ALL NOTIFICATIONS
+	$("#clear-all-notifications").click(function(){
+		$(this).parent().find(".notification-card-wrapper").remove();
+		$(this).parent().append("<h3 align = 'center' class = 'no-notif-text white-text'>No new notifications!</h3>")
+		$(this).css("display","none");
+	});
+	// close ws divs on esc
 	$( document ).on( 'keydown', function ( e ) {
 	    if ( e.keyCode === 27) { // ESC
 			$(".ws-div").fadeOut(500);
 	    }
 	});
-	
+	//FixNotificationCards();
 });
 
 function PlayVideo(){
@@ -193,25 +206,25 @@ function RefreshUsersList(users_list){
 	}
 }
 function ShowNotification(text,time){
+	$("#notification-list").find(".no-notif-text").remove();
+	$("#clear-all-notifications").css("display","block");
 	$("#notification-list").append('<div class="notification-card-wrapper"><label class="card">' + text + '</label><button type="button" class="my-btn fill-red clear-notification">Clear</button></div>');
 	FixNotificationCards();
 }
 function FixNotificationCards(){
 	// FIX NOTIFICATION BUTTONS
-	var cards = $(".notification-card-wrapper");
-	for (var i = cards.length - 1; i >= 0; i--) {
+	var wrappers = $(".notification-card-wrapper");
+	for (var i = wrappers.length - 1; i >= 0; i--) {
+		var wrapper = wrappers.eq(i);
+
 		// fix button
-		var label = cards.find(".card");
-		var button = cards.find(".clear-notification");
+		var label = wrapper.find(".card");
+		var button = wrapper.find(".clear-notification");
 		label.css("padding-right", button.width() + 5);
 		button.height(label.height()+2);
 
 		// fix margin of the card
-		var card = cards[i];
-		// alert(card);
-		//alert(card.height());
-		//card.height(label.height()+2);
-		//alert(card.height());
+		wrapper.height(label.height()*2);
 	}
 }
 function AddUser(username){
