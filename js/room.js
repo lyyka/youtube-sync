@@ -11,7 +11,7 @@ var was_buff = false;
 
 var interval;
 
-var socket = io.connect('http://localhost:8080');
+var socket = io.connect('http://192.168.1.4:8080');
 // join the user to the room
 socket.emit("join room",{username: username,room:room},function(data){
 	if(data.status == -1){
@@ -164,6 +164,10 @@ $(document).ready(function(){
 	$("#show-users").click(function(){
 		$("#users-list-wrapper").fadeIn(500);
 	});
+	//close notif center
+	$(".close-ws-div").click(function(){
+		$(this).parents().eq(2).fadeOut(500);
+	});
 	//clear notif
 	$("#notification-list").on("click",".clear-notification",function(){
 		var button = $(this);
@@ -176,8 +180,8 @@ $(document).ready(function(){
 	});
 	// CLEAR ALL NOTIFICATIONS
 	$("#clear-all-notifications").click(function(){
-		$(this).parent().find(".notification-card-wrapper").remove();
-		$(this).parent().append("<h3 align = 'center' class = 'no-notif-text white-text'>No new notifications!</h3>")
+		$(this).parents().eq(1).find(".notification-card-wrapper").remove();
+		$(this).parents().eq(1).append("<h3 align = 'center' class = 'no-notif-text white-text'>No new notifications!</h3>")
 		$(this).css("display","none");
 	});
 	// close ws divs on esc

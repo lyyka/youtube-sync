@@ -15,11 +15,24 @@
 <body>
 	<div id = "notification-list-wrapper" class="ws-div">
 		<div id = "notification-list" class="container">
-			<p id = "clear-all-notifications" class="white-text" align="right"><i class="fas fa-broom white-text"></i> Clear all</p>
+			<p class="white-text" align="right">
+				<span class="white-text cursor-pointer ws-div-control close-ws-div">
+					<i class="fas fa-times"></i> Close 
+				</span>
+				<span class="cursor-pointer ws-div-control" id = "clear-all-notifications">
+					<i class="fas fa-broom white-text"></i> Clear all 
+				</span>
+			</p>
 		</div>
 	</div>
 	<div id = "users-list-wrapper" class="ws-div">
-		<div id = "users-list" class="container"></div>
+		<div id = "users-list" class="container">
+			<p class="white-text" align="right">
+				<span class="white-text cursor-pointer ws-div-control close-ws-div">
+					<i class="fas fa-times"></i> Close 
+				</span>
+			</p>
+		</div>
 	</div>
 	<h3 align="center" class = "remove-margin-bottom" id = "room-share">
 	</h3><br>

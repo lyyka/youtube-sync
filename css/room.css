@@ -101,8 +101,11 @@
 .clear-notification{
 	position: absolute;top: 0;right: 0;
 }
-#clear-all-notifications{
+.cursor-pointer{
 	cursor: pointer;
+}
+.ws-div-control:hover{
+	text-decoration: underline;
 }
 .float-right{
 	float: right;
