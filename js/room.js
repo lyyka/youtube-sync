@@ -11,7 +11,7 @@ var was_buff = false;
 
 var interval;
 
-var socket = io.connect('http://192.168.1.4:8080');
+var socket = io.connect('http://192.168.1.3:8000');
 // join the user to the room
 socket.emit("join room",{username: username,room:room},function(data){
 	if(data.status == -1){
@@ -118,11 +118,12 @@ socket.on("joined",function(data){
 	ShowNotification(data.message,data.time);
 	RefreshUsersList(data.users_list);
 });
+// notify users when someone leaves
 socket.on("left",function(data){
 	ShowNotification(data.message,data.time);
 	RefreshUsersList(data.users_list);
 });
-// when embed video is changes
+// when embed video is changed
 socket.on("change embed url",function(data){
 	ChangeVideo(data.url);
 	var message = data.user + " changed video id to: " + parse_yt_url(data.url);
@@ -194,7 +195,17 @@ $(document).ready(function(){
 });
 
 function PlayVideo(){
-	player.playVideo();
+	socket.emit("get video time",{room: room},function(data){
+		const seekTime = data.videoTime;
+		if(seekTime > player.getCurrentTime()){
+			console.log(seekTime + " ? " + player.getCurrentTime());
+			player.seekTo(data.videoTime,true);
+			player.playVideo();
+		}
+		else{
+			player.playVideo();
+		}
+	});
 }
 function PauseVideo(){
 	player.pauseVideo();

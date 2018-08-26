@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-server.listen(8080);
+server.listen(8000);
 
 var starting_url = "https://www.youtube.com/watch?v=1vLkX_BYzhg";
 var rooms = {};
@@ -94,11 +94,17 @@ io.on("connection",function(socket){
 		console.log(data.username + " has paused the video in " + socket.room + " @ " + PrintTimeStamp());
 		fn({feedback: "You have paused the video", time: PrintTimeStamp()});
 	});
+	socket.on("get video time",function(data,fn){
+		if(rooms[data.room] != null){
+			console.log(rooms[data.room].currTime);
+			fn({videoTime: rooms[data.room].currTime});
+		}
+	});
 	// while the video is playing get it's current time so when someone connects, he starts from the time others are listening at the moment
 	socket.on("update video time",function(data){
 		if(data.videoTime != null && data.room != null){
 			var room = data.room;
-			if(rooms[room] != null){
+			if(rooms[room] != null && data.videoTime > rooms[room].currTime){
 				rooms[room].currTime = data.videoTime;
 			}
 		}
