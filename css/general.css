@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
@@ -17,10 +18,15 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }
+html{
+	height: 100%;
+	box-sizing: border-box;
+}
 body{
-	background-color: #262626;
+	background-color: white;
 	position: relative;
-	font-family: 'Dosis', sans-serif !important;
+	min-height: 100%;
+	font-family: 'Lato', sans-serif;
 	margin: 0;
 	overflow-x: hidden;
 }
@@ -52,23 +58,26 @@ input:focus{
 	-webkit-transition:color,0.4s;
 	transition:color,0.4s;
 }
-.fill-black{
-	color: white;
-	background-color: #262626;
-}
-.fill-red{
-	color: #262626;
-	background-color: red;
-}
 .section{
 	padding: 50px 50px;
 }
+/*colors*/
 .red-text{
 	color: red;
 }
 .white-text{
 	color: white;
 }
+.black-text{
+	color: #262626;
+}
+.black-bg{
+	background-color: #262626;
+}
+.red-bg{
+	background-color: red;
+}
+/*end colors*/
 .center-div{
 	position: absolute;
 	top: 50%;
@@ -80,4 +89,7 @@ input:focus{
 }
 .full-w{
 	width: 100%;
+}
+.align-center{
+	text-align: center;
 }

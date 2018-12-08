@@ -1,36 +1,11 @@
-.section-background{
-	position: relative;
-	/* The image used */
-    background-image: url("/images/header-image.jpg");
-
-    /* Set a specific height */
-    height: 100%; 
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+#main-section{
+	max-height: 100%;
+	background-color: #262626;
 }
-#split-screen-wrapper{
-	position: relative;
+#main-subtitle{
+	font-size: 1.4em;
 }
-.screen-part{
-	height: 100%;
-	padding-top: 250px;
-	padding-bottom: 250px;
-}
-#header-text-wrapper{
-	background-color: white;
-	padding: 25px 25px; 
-	width:auto;
-}
-#header-wrapper-outter{
-	padding: 200px 50px;
-}
-#about-wrapper-outter{
-	position: relative;
-}
-#about-wrapper{
-	font-size: 30px;
+/*how it works*/
+.step{
+	margin-bottom: 120px;
 }

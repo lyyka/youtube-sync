@@ -1,12 +1,12 @@
-var files = require('fs');
-var url = require('url');
+const files = require('fs');
+const url = require('url');
 // express
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 const bodyParser = require("body-parser");
 // socketio
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({
@@ -16,8 +16,8 @@ app.use(bodyParser.json());
 
 server.listen(8000);
 
-var starting_url = "https://www.youtube.com/watch?v=1vLkX_BYzhg";
-var rooms = {};
+const starting_url = "https://www.youtube.com/watch?v=1vLkX_BYzhg";
+const rooms = {};
 
 app.get("/",function(req,res){
 	files.readFile("index.html",function(err,data){
@@ -103,7 +103,7 @@ io.on("connection",function(socket){
 	// while the video is playing get it's current time so when someone connects, he starts from the time others are listening at the moment
 	socket.on("update video time",function(data){
 		if(data.videoTime != null && data.room != null){
-			var room = data.room;
+			let room = data.room;
 			if(rooms[room] != null && data.videoTime > rooms[room].currTime){
 				rooms[room].currTime = data.videoTime;
 			}
@@ -111,10 +111,10 @@ io.on("connection",function(socket){
 	});
 	// generates new room
 	socket.on("generate-room-code",function(fn){
-		var generated = false;
-		var room = "";
+		let generated = false;
+		let room = "";
 		while(!generated){
-			var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+			const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 			for (var i = 0; i < 7; i++)
 				room += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -130,8 +130,8 @@ io.on("connection",function(socket){
 	});
 	// adds user to the room
 	socket.on("join room",function(data,fn){
-		var room = data.room;
-		var username = data.username;
+		const room = data.room;
+		const username = data.username;
 		if(rooms[room] != null){
 			if(!rooms[room].users.includes(username)){
 				socket.username = username;
@@ -153,8 +153,8 @@ io.on("connection",function(socket){
 	// when user leaves the room
 	socket.on("leave room",function(data){
 		if(rooms[data.room] != null){
-			var room = data.room;
-			var index = rooms[room].users.indexOf(data.user);
+			const room = data.room;
+			const index = rooms[room].users.indexOf(data.user);
 			if(index > -1){
 				socket.leave(room);
 				socket.username = "";

@@ -3,77 +3,142 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>YouSync - Home</title>
-	<!-- font -->
-	<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
 	<!-- font awesome -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<!-- css -->
 	<link rel = "stylesheet" href = "/css/index.css">
+	<!-- footer -->
 	<link rel = "stylesheet" href = "/css/footer.css">
+	<!-- general -->
 	<link rel = "stylesheet" href = "/css/general.css">
+	<!-- navigation -->
 	<link rel = "stylesheet" href = "/css/navigation.css">
-	<!-- bootstrap -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	
 </head>
 <body>
-	<div class = "container-fluid">
-		<div class = "row" id = "split-screen-wrapper">
-			<div class = "col-md-6 screen-part white-bg">
-				<div class = "center-div">
-					<a href = "/create"><button class = "button black transitions">CREATE ROOM</button></a>
-				</div>
-				
+	<nav id="navigation">
+		<div class="container-fluid" id="navigation-inner">
+			<div id="nav-logo">
+				<h3 class="red-text">YoutubeSync</h3>
 			</div>
-			<div class = "col-md-6 screen-part black-bg">
-				<div class = "center-div">
-					<a href = "/join"><button id = "join-room" class = "button red transitions">JOIN ROOM</button></a>
+			<div id="nav-icon-wrapper">
+				<div id="nav-icon">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
 				</div>
+			</div>
+			<div id="nav-list-wrapper">
+				<ul id="nav-list">
+					<li class="nav-item active">
+						<a href="/#top">
+							Home
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="/#how-it-works">
+							How It Works
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="/#how-to-use">
+							How To Use
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="white-text red-bg nav-button" href="/create">
+							Create Room
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="white-text black-bg nav-button" href="/join">
+							Join Room
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
-	</div>
-
-	<div id = "about-wrapper-outter" class = "section-background section">
-		<div id = "about-wrapper" class = "container">
-			<div class = "row">
-				<!-- <div class = "col-md-3">
-					<img class = "img-fluid" src = "/images/devices.png">
-				</div> -->
-				<div class = "col-md-12">
-					<h3 align="center" class = "red-text">WHAT IS THIS?</h3>
-					<p align="center">Here, you can watch youtube videos with your friends or family, on multiple devices and <span class = "red-text">synced</span>!<br>When anybody clicks play, pause or changes the video link, everybody receive changes!</p>
-				</div>
-			</div>
-			<hr>
-			<div class = "row">
-				<div class = "col-md-12">
-					<h3 align="center" class = "red-text">STARTING GUIDE</h3>
-					<p align="center">Either <span class = "red-text">create</span> or <span class = "red-text">join</span> an existing room.<br>Rooms are up to 10 members, there, you can watch youtube video of your choice synced with room members, have fun!</p>
-				</div>
+	</nav>
+	<!-- main -->
+	<section class="section" id="main-section">
+		<div class="container">
+			<h1 align="center" class="white-text">Your wireless solution for wacthing Youtube videos!</h1>
+			<p align="center" id="main-subtitle" class="red-text">YoutubeSync allows you to watch youtube video synchronized accross unlimited number of devices connected on same network!</p>
+			<div class="align-center">
+				<img src="/images/wifi-yt.png" class="img-fluid">
 			</div>
 		</div>
-	</div>
-	<div id = "footer" class = "section">
+	</section>
+	<!-- how it works -->
+	<section class="section" id="how-it-works">
+		<div class="container">
+			<h1 align="center" class="red-text">How It Works</h1>
+			<hr />
+			<div class="row step">
+				<div class="col-md-6">
+					<h2 align="center" class="black-text">
+						<i class="fas fa-key"></i> <br />
+						A user creates a room and gets 7-digit room key.
+					</h2>
+				</div>
+			</div>
+			<div class="row step">
+				<div class="col-md-6 offset-md-6">
+					<h2 align="center" class="black-text">
+						<i class="fas fa-users"></i> <br />
+						Then, he shares the key and users connect to a room.
+					</h2>
+				</div>
+			</div>
+			<hr />
+			<h2 align="center" class="black-text">
+				<!-- <i class="fas fa-sync"></i> -->
+				<img src="/images/devices.png" class="img-fluid" /><br /><br />
+				Now all of the users in the room are synchronized and are able to use all functions provided in the room.
+			</h2>
+		</div>
+	</section>
+	<section class="section" id="how-to-use">
+		<div class="container">
+			<h1 align="center" class="red-text">How To Use</h1>
+			<p>If you are a developer and want to start working on this project, here are a few notes to get you started!</p>
+			<br />
+			<h2 class="black-text">Back-end</h2>
+			<p>
+				For back-end part, project utilizes Node.js , all of the server code can be found in <span class="red-text">/server.js</span> file in root directory. Express framework for Node.js is used.
+				<br/>
+				Default port for the server is <span class="red-text">8000</span>. You can change that in <span class="red-text">/server.js</span>
+			</p>
+			<h2 class="black-text">Connection and synchronization</h2>
+			<p>
+				After setting up the back-end, our project must be able to somehow communicate between devices on same network.
+				<br/>
+				To accomplish that, project uses <a target="_blank" href="https://socket.io/">socket.io</a> library. It has all the awesome features needed to communicate between user and server including the feature to craete and manage rooms! That's exactly what we need. 
+			</p>
+			<h2 class="black-text">Running the app</h2>
+			<p>
+				To run this app, all you need to do is open <span class="red-text">CMD</span>, navigate to the apps <span class="red-text">root</span> directory and run <code class="red-text">npm start</code>. This command will start up the server.
+				<br />
+				Now, just go into your browser and type in <code class="red-text">[Your IPV4 address]:8000</code>. And that's it, your app should be up and running! Remember, every time you make a change to <span class="red-text">/server.js</span> you must restart the server from CMD.
+			</p>
+		</div>
+	</section>
+	<footer id = "footer" class = "section">
 		<div class = "container">
-			<div class = "row">
-				<div class = "col-md-4">
-					<a target = "_blank" href = "https://www.github.com/lyyka"><i class = "fa fa-github"></i> GitHub</a>
-				</div>
-				<div class = "col-md-4">
-					<a target = "_blank" href = "https://www.facebook.com/luka.robajac00"><i class = "fa fa-facebook"></i> Facebook</a>
-				</div>
-				<div class = "col-md-4">
-					<a target = "_blank" href = "https://www.instagram.com/robajaac"><i class = "fa fa-instagram"></i> Instagram</a>
-				</div>
-			</div>
+			<a target = "_blank" href = "https://www.github.com/lyyka/YoutubeSync"><i class = "fab fa-github"></i> GitHub</a>
 		</div>
-	</div>
+	</footer>
 	<!-- scripts -->
 	<!-- jquery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<!-- bootstrap -->
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 	<!-- other -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js" integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0=" crossorigin="anonymous"></script>
+	<!-- footer -->
 	<script src = "/js/footer.js"></script>
+	<!-- navigation -->
+	<script src = "/js/navigation.js"></script>
 </body>
 </html>

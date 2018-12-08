@@ -1,3 +1,52 @@
+let user_ipv4 = "";
+/**
+ * Get the user IP throught the webkitRTCPeerConnection
+ * @param onNewIP {Function} listener function to expose the IP locally
+ * @return undefined
+ */
+function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
+    //compatibility for firefox and chrome
+    var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+    var pc = new myPeerConnection({
+        iceServers: []
+    }),
+    noop = function() {},
+    localIPs = {},
+    ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+    key;
+
+    function iterateIP(ip) {
+        if (!localIPs[ip]) onNewIP(ip);
+        localIPs[ip] = true;
+    }
+
+     //create a bogus data channel
+    pc.createDataChannel("");
+
+    // create offer and set local description
+    pc.createOffer(function(sdp) {
+        sdp.sdp.split('\n').forEach(function(line) {
+            if (line.indexOf('candidate') < 0) return;
+            line.match(ipRegex).forEach(iterateIP);
+        });
+        
+        pc.setLocalDescription(sdp, noop, noop);
+    }, noop); 
+
+    //listen for candidate events
+    pc.onicecandidate = function(ice) {
+        if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+        ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+    };
+}
+
+// Usage
+
+getUserIP(function(ip){
+    user_ipv4 = ip;
+});
+
+
 var query = window.location.search.substring(1);
 var qs = parse_query_string(query);
 var username = qs.username;
@@ -11,7 +60,7 @@ var was_buff = false;
 
 var interval;
 
-var socket = io.connect('http://192.168.1.3:8000');
+var socket = io.connect('http://' + user_ipv4 + ':8000');
 // join the user to the room
 socket.emit("join room",{username: username,room:room},function(data){
 	if(data.status == -1){
@@ -29,8 +78,17 @@ socket.emit("join room",{username: username,room:room},function(data){
 		RefreshUsersList(users_list);
 		starting_time = data.videoTime;
 		starting_state = data.state;
-		$("#room-share").html("Share this room with your friends: <span class = 'red-text'>" +
-		 room + "</span>");
+		// load the qr code
+        // for now qr code is returning only the room number
+        const qrcode = new QRCode(document.getElementById("room-qr-code"), {
+            text: room,
+            width: 128,
+            height: 128,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        $("#room-qr-code").append('<h4 align = "left" class = "red-text">' + room + '</h4>')
 	}
 });
 
@@ -149,6 +207,7 @@ $(document).ready(function(){
 			$("body").css("padding-bottom",$("#footer").height()+50);
 		}
 	});
+    // change embed url
 	$("#change-btn").on("click",function(){
 		var url_new = $("#embed-url").val();
 		if(TestUrl(url_new)){
@@ -158,10 +217,18 @@ $(document).ready(function(){
 			ChangeVideo(url_new);
 		}
 	});
+    // leave room
+    $("#leave-room").click(function(event){
+        event.preventDefault();
+        closeIt();
+        location.replace("/");
+    });
+    // open notifications
 	$("#show-notify").click(function(){
 		$("#notification-list-wrapper").fadeIn(500);
 		FixNotificationCards();
 	});
+    // see all users
 	$("#show-users").click(function(){
 		$("#users-list-wrapper").fadeIn(500);
 	});
