@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-server.listen(8000);
+server.listen(process.env.PORT || 8000);
 
 const starting_url = "https://www.youtube.com/watch?v=1vLkX_BYzhg";
 const rooms = {};
