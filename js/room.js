@@ -60,7 +60,7 @@ var was_buff = false;
 
 var interval;
 
-var socket = io.connect('http://' + user_ipv4 + ':8000');
+var socket = io.connect('https://you-sync.herokuapp.com' . (process.env.PORT || 8000));
 // join the user to the room
 socket.emit("join room",{username: username,room:room},function(data){
 	if(data.status == -1){
