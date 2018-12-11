@@ -46,7 +46,7 @@ getUserIP(function(ip){
     user_ipv4 = ip;
 });
 
-const socket = io.connect('https://you-sync.herokuapp.com' . (process.env.PORT || 8000));
+const socket = io.connect('https://you-sync.herokuapp.com' + (process.env.PORT || 8000));
 $(document).ready(function(){
 	$("#generate-room-code").click(function(){
 		socket.emit("generate-room-code",function(data){
