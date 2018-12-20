@@ -1,16 +1,14 @@
 $(document).ready(function(){
 	$("#join-room").click(function(){
-		var username = $("#username-input").val();
-		var code = $("#room-code-input").val();
+		const username = $("#username-input").val();
+		const code = $("#room-code-input").val();
 		if(ValidateInput(username,code)){
-			window.location.replace("/room?username="+username+"&room="+code);
+			window.location.replace("/room/" + code + "/" + username);
 		}
 	});
 });
 function ValidateInput(username,code){
-	var valid = true;
-	var username = username;
-	var code = code;
+	let valid = true;
 	if(username.length == 0){
 		valid = false;
 	}

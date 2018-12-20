@@ -1,0 +1,159 @@
+html
+	head
+		meta(
+			charset="utf-8"
+		)
+		meta(
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		)
+		title YouSync - Home
+		//- font awesome
+		link(
+			rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+			integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+			crossorigin="anonymous"
+		)
+		//- bootstrap
+		link(
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+			integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+			crossorigin="anonymous"
+		)
+		link(
+			rel = "stylesheet"
+			href = "/css/index.css"
+		)
+		link(
+			rel = "stylesheet"
+			href = "/css/footer.css"
+		)
+		link(
+			rel = "stylesheet"
+			href = "/css/general.css"
+		)
+		link(
+			rel = "stylesheet"
+			href = "/css/navigation.css"
+		)
+	body
+		include ../includes/nav.pug
+		section(
+			class = "section"
+			id="main-section"
+		)
+			div(class="container")
+				h1(
+					align="center"
+					class="white-text"
+				) Your wireless solution for watching Youtube videos!
+				p(
+					align="center"
+					id="main-subtitle"
+					class="red-text"
+				) YouSync allows watching of youtube video synchronized across multiple devices
+				div(class="align-center")
+					img(
+						src="/images/wifi-yt.png"
+						class="img-fluid"
+					)
+		section(
+			class = "section"
+			id="how-it-works"
+		)
+			div(class="container")
+				h1(
+					align="center"
+					class="red-text"
+				) How It Works
+				hr
+				div(class="row step")
+					div(class="col-md-6")
+						h2(align="center")
+							i(class="fas fa-key") 
+						h2(
+							align="center"
+							class="black-text"
+						) A user creates a room and gets a 7-letter room key.
+				div(class="row step")
+					div(class="col-md-6 offset-md-6")
+						h2(align="center")
+							i(class="fas fa-users") 
+						h2(
+							align="center"
+							class="black-text"
+						) User just shares the key or QR code and everybody is good to go.
+				hr
+				div(class="align-center")
+					br
+					img(
+						src="/images/devices.png"
+						class="img-fluid"
+					)
+				br
+				br
+				h2(
+					align="center"
+					class="black-text"
+				) Now all of the users in the room are synchronized!
+		section(
+			class = "section"
+			id="how-to-use"
+		)
+			div(class="container")
+				h1(
+					align="center"
+					class="red-text"
+				) How To Use
+				p If you are a developer and want to start working on this project, here are a few notes to get you started!
+				//- back-end
+				h2(class="black-text") Back-end
+				p 
+					| For back-end part, project utilizes Node.js , all of the server code can be found in 
+					span(class="red-text") /server.js 
+					| file in root directory. Express framework for Node.js is used.
+				//- connection and sync
+				h2(class="black-text") Connection and synchronization
+				p 
+					| After setting up the back-end, our project must be able to somehow communicate between devices on same network.
+					br
+					| To accomplish that, project uses 
+					a(
+						target="_blank"
+						href="https://socket.io/"
+					) socket.io 
+					| library. It has all the awesome features needed to communicate between user and server including the feature to craete and manage rooms! That's exactly what we need. 
+				//- running the app
+				h2(class="black-text") Running the app
+				p 
+					| To run this app, all you need to do is open 
+					code(class="red-text") [Your IPV4 address or 'localhost']:8000 
+					| And that's it, your app should be up and running! Remember, every time you make a change to 
+					span(class="red-text") /server.js 
+					| you must restart the server from CMD.
+		include ../includes/footer.pug		
+	script(
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+	)
+	script(
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+		crossorigin="anonymous"
+	)
+	script(
+		src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"
+		integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0="
+		crossorigin="anonymous"
+	)
+	script(
+		src="/js/footer.js"
+	)
+	script(
+		src="/js/craete_room.js"
+	)
+	script(
+		src="/js/navigation.js"
+	)
+

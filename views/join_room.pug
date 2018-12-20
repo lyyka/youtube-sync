@@ -1,0 +1,87 @@
+html
+	head
+		meta(
+			charset="utf-8"
+		)
+		meta(
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		)
+		title Join Room
+		link(
+			rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+			integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+			crossorigin="anonymous"
+		)
+		link(
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+			integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+			crossorigin="anonymous"
+		)
+		link(
+			rel = "stylesheet"
+			href = "/css/join_room.css"
+		)
+		link(
+			rel = "stylesheet"
+			href = "/css/footer.css"
+		)
+		link(
+			rel = "stylesheet"
+			href = "/css/general.css"
+		)
+		link(
+			rel = "stylesheet"
+			href = "/css/navigation.css"
+		)
+	body
+		include ../includes/nav.pug
+		div(
+			id="joining-div"
+			class="extended-section"
+		)
+			div(class="container")
+				h3(align="left") Join a room by choosing a username and entering the room key
+				input(
+					id="username-input"
+					type="text"
+					placeholder="Username"
+				)
+				input(
+					id="room-code-input"
+					type="text"
+					placeholder="Room Code"
+					value = roomID
+				)
+				br
+				button(
+					id="join-room"
+					type="button"
+					class="my-btn full-w white-text red-bg"
+				) Join Room
+		include ../includes/footer.pug
+	script(
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+	)
+	script(
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+		crossorigin="anonymous"
+	)
+	script(
+		src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"
+		integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0="
+		crossorigin="anonymous"
+	)
+	script(
+		src="/js/footer.js"
+	)
+	script(
+		src="/js/join_room.js"
+	)
+	script(
+		src="/js/navigation.js"
+	)
+

@@ -1,17 +1,17 @@
-var query = window.location.search.substring(1);
-var qs = parse_query_string(query);
-var username = qs.username;
-var room = qs.room;
+// const query = window.location.search.substring(1);
+// const qs = parse_query_string(query);
+// const username = qs.username;
+// const room = qs.room;
 
-var starting_url = "";
-var starting_time = 0;
-var starting_state = "paused";
+let starting_url = "";
+let starting_time = 0;
+let starting_state = "paused";
 
-var was_buff = false;
+let was_buff = false;
 
-var interval;
+let interval;
 
-var socket = io();
+const socket = io();
 // join the user to the room
 socket.emit("join room",{username: username,room:room},function(data){
 	if(data.status == -1){
@@ -23,16 +23,16 @@ socket.emit("join room",{username: username,room:room},function(data){
 		window.location.replace("/join");
 	}
 	if(data.status == 1){
-		ShowNotification(data.message,data.time);
+		showNotification(data.message,data.time);
 		starting_url = data.videoUrl;
 		var users_list = data.usersList;
-		RefreshUsersList(users_list);
+		refreshUsersList(users_list);
 		starting_time = data.videoTime;
 		starting_state = data.state;
 		// load the qr code
         // for now qr code is returning only the room number
         const qrcode = new QRCode(document.getElementById("room-qr-code"), {
-            text: room,
+            text: "http://you-sync.herokuapp.com/join/" + room,
             width: 128,
             height: 128,
             colorDark : "#000000",
@@ -45,9 +45,9 @@ socket.emit("join room",{username: username,room:room},function(data){
 
 // YOUTUBE API
 
-var player;
+let player;
 function onYouTubeIframeAPIReady() {
-	var video_id = parse_yt_url(starting_url);
+	const video_id = patseYTUrl(starting_url);
 	player = new YT.Player('video', {
 	  height: '500',
 	  width: '100%',
@@ -69,19 +69,19 @@ function onPlayerReady(event) {
 	// bind events
 	$("#play-btn").click(function() {
 		socket.emit("play video",{username:username,room:room},function(data){
-			ShowNotification(data.feedback,data.time);
+			showNotification(data.feedback,data.time);
 		});
-		PlayVideo();
+		playVideo();
 	});
 
 	$("#pause-btn").click(function() {
 		socket.emit("pause video",{username:username,room:room},function(data){
-			ShowNotification(data.feedback,data.time);
+			showNotification(data.feedback,data.time);
 		});
-		PauseVideo();
+		pauseVideo();
 	});
-	ChangeVideo(starting_url);
-	PauseVideo();
+	changeVideo(starting_url);
+	pauseVideo();
 	player.seekTo(starting_time,true);
 }
 
@@ -89,12 +89,12 @@ function onPlayerStateChange(event){
 	if (event.data == YT.PlayerState.PLAYING) {
 		if(was_buff){
 			socket.emit("play video",{username:username,room:room},function(data){
-				ShowNotification(data.feedback,data.time);
+				showNotification(data.feedback,data.time);
 			});
-			PlayVideo();
+			playVideo();
 			was_buff = false;
 		}
-      	interval = setInterval(UpdateVideoState, 500);
+      	interval = setInterval(updateVideoState, 500);
     }
 	if (event.data == YT.PlayerState.PAUSED) {
 		clearInterval(interval);
@@ -102,7 +102,7 @@ function onPlayerStateChange(event){
     if(event.data == YT.PlayerState.BUFFERING){
     	was_buff = true;
     	socket.emit("pause video",{username:username,room:room},function(data){
-			ShowNotification(data.feedback,data.time);
+			showNotification(data.feedback,data.time);
 		});
     }
 }
@@ -111,32 +111,32 @@ function onPlayerStateChange(event){
 
 // when control is received
 socket.on('control', function (data) {
-	var message = data.user;
+	let message = data.user;
 	if(data.control == "play"){
 		message += " played the video.";
-		PlayVideo();
+		playVideo();
 	}
 	if(data.control == "pause"){
 		message += " paused the video.";
-		PauseVideo();
+		pauseVideo();
 	}
-	ShowNotification(message,data.time);
+	showNotification(message,data.time);
 });
 // notify users when someone joins
 socket.on("joined",function(data){
-	ShowNotification(data.message,data.time);
-	RefreshUsersList(data.users_list);
+	showNotification(data.message,data.time);
+	refreshUsersList(data.users_list);
 });
 // notify users when someone leaves
 socket.on("left",function(data){
-	ShowNotification(data.message,data.time);
-	RefreshUsersList(data.users_list);
+	showNotification(data.message,data.time);
+	refreshUsersList(data.users_list);
 });
 // when embed video is changed
 socket.on("change embed url",function(data){
-	ChangeVideo(data.url);
-	var message = data.user + " changed video id to: " + parse_yt_url(data.url);
-	ShowNotification(message,data.time);
+	changeVideo(data.url);
+	const message = data.user + " changed video id to: " + patseYTUrl(data.url);
+	showNotification(message,data.time);
 });
 // receive video state change event
 socket.on("video state change",function(data){
@@ -160,12 +160,12 @@ $(document).ready(function(){
 	});
     // change embed url
 	$("#change-btn").on("click",function(){
-		var url_new = $("#embed-url").val();
-		if(TestUrl(url_new)){
+		const url_new = $("#embed-url").val();
+		if(testUrl(url_new)){
 			socket.emit("change url",{url: url_new, user: username, room: room},function(data){
-				ShowNotification(data.feedback,data.time);
+				showNotification(data.feedback,data.time);
 			});
-			ChangeVideo(url_new);
+			changeVideo(url_new);
 		}
 	});
     // leave room
@@ -177,7 +177,7 @@ $(document).ready(function(){
     // open notifications
 	$("#show-notify").click(function(){
 		$("#notification-list-wrapper").fadeIn(500);
-		FixNotificationCards();
+		fixNotificationCards();
 	});
     // see all users
 	$("#show-users").click(function(){
@@ -189,30 +189,31 @@ $(document).ready(function(){
 	});
 	//clear notif
 	$("#notification-list").on("click",".clear-notification",function(){
-		var button = $(this);
-		var notification_list = button.parents().eq(1);
+		const button = $(this);
+		let notification_list = button.parents().eq(1);
 		button.parent().remove();
-		var wrappers = notification_list.find(".notification-card-wrapper");
+		const wrappers = notification_list.find(".notification-card-wrapper");
 		if(wrappers.length == 0){
+            $("#clear-all-notifications").hide();
 			notification_list.append("<h3 align = 'center' class = 'no-notif-text white-text'>No new notifications!</h3>")
 		}
 	});
 	// CLEAR ALL NOTIFICATIONS
 	$("#clear-all-notifications").click(function(){
-		$(this).parents().eq(1).find(".notification-card-wrapper").remove();
-		$(this).parents().eq(1).append("<h3 align = 'center' class = 'no-notif-text white-text'>No new notifications!</h3>")
+		$("#notification-list").find(".notification-card-wrapper").remove();
+		$("#notification-list").append("<h3 align = 'center' class = 'no-notif-text white-text'>No new notifications!</h3>")
 		$(this).css("display","none");
 	});
-	// close ws divs on esc
+	// close whole screen divs on esc
 	$( document ).on( 'keydown', function ( e ) {
 	    if ( e.keyCode === 27) { // ESC
 			$(".ws-div").fadeOut(500);
 	    }
 	});
-	//FixNotificationCards();
+	//fixNotificationCards();
 });
 
-function PlayVideo(){
+function playVideo(){
 	socket.emit("get video time",{room: room},function(data){
 		const seekTime = data.videoTime;
 		if(seekTime > player.getCurrentTime()){
@@ -225,34 +226,35 @@ function PlayVideo(){
 		}
 	});
 }
-function PauseVideo(){
+function pauseVideo(){
 	player.pauseVideo();
 }
-function ChangeVideo(url_new){
-	var id = parse_yt_url(url_new);
+function changeVideo(url_new){
+	const id = patseYTUrl(url_new);
+    player.seekTo(0, true);
 	player.cueVideoById(id);
 }
-function RefreshUsersList(users_list){
+function refreshUsersList(users_list){
 	$("#users-list").find(".card").remove();
 	for (var i = 0; i < users_list.length; i++) {
-		AddUser(users_list[i]);
+		addUser(users_list[i]);
 	}
 }
-function ShowNotification(text,time){
+function showNotification(text,time){
 	$("#notification-list").find(".no-notif-text").remove();
-	$("#clear-all-notifications").css("display","block");
+	$("#clear-all-notifications").show();
 	$("#notification-list").append('<div class="notification-card-wrapper"><label class="card">' + text + '</label><button type="button" class="my-btn fill-red clear-notification">Clear</button></div>');
-	FixNotificationCards();
+	fixNotificationCards();
 }
-function FixNotificationCards(){
+function fixNotificationCards(){
 	// FIX NOTIFICATION BUTTONS
-	var wrappers = $(".notification-card-wrapper");
+	let wrappers = $(".notification-card-wrapper");
 	for (var i = wrappers.length - 1; i >= 0; i--) {
-		var wrapper = wrappers.eq(i);
+		let wrapper = wrappers.eq(i);
 
 		// fix button
-		var label = wrapper.find(".card");
-		var button = wrapper.find(".clear-notification");
+		let label = wrapper.find(".card");
+		let button = wrapper.find(".clear-notification");
 		label.css("padding-right", button.width() + 5);
 		button.height(label.height()+2);
 
@@ -260,10 +262,10 @@ function FixNotificationCards(){
 		wrapper.height(label.height()*2);
 	}
 }
-function AddUser(username){
+function addUser(username){
 	$("#users-list").append('<label class = "card">' + username + '</label>');
 }
-function TestUrl(website){
+function testUrl(website){
 	//return true;
 	return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(website);
 }
@@ -273,7 +275,7 @@ function closeIt()
 }
 window.onunload = closeIt;
 window.onbeforeunload = closeIt;
-function UpdateVideoState(){
+function updateVideoState(){
 	var resp = parseTime(player.getCurrentTime());
 	// final for current time
 	var final = "";
@@ -311,7 +313,7 @@ function parseTime(seconds){
 	return {hours: hours, mins: mins, secs: secs}
 }
 // returns videos id from the string
-function parse_yt_url(url){
+function patseYTUrl(url){
 	var start = -1;
 	if(url.indexOf('=') == -1){
 		start = url.lastIndexOf('/');
@@ -323,25 +325,25 @@ function parse_yt_url(url){
 		return url.substring(start+1);
 	}
 }
-// get username and room code from the link
-function parse_query_string(query) {
-  var vars = query.split("&");
-  var query_string = {};
-  for (var i = 0; i < vars.length; i++) {
-    var pair = vars[i].split("=");
-    var key = decodeURIComponent(pair[0]);
-    var value = decodeURIComponent(pair[1]);
-    // If first entry with this name
-    if (typeof query_string[key] === "undefined") {
-      query_string[key] = decodeURIComponent(value);
-      // If second entry with this name
-    } else if (typeof query_string[key] === "string") {
-      var arr = [query_string[key], decodeURIComponent(value)];
-      query_string[key] = arr;
-      // If third or later entry with this name
-    } else {
-      query_string[key].push(decodeURIComponent(value));
-    }
-  }
-  return query_string;
-}
+// // get username and room code from the link
+// function parse_query_string(query) {
+//   var vars = query.split("&");
+//   var query_string = {};
+//   for (var i = 0; i < vars.length; i++) {
+//     var pair = vars[i].split("=");
+//     var key = decodeURIComponent(pair[0]);
+//     var value = decodeURIComponent(pair[1]);
+//     // If first entry with this name
+//     if (typeof query_string[key] === "undefined") {
+//       query_string[key] = decodeURIComponent(value);
+//       // If second entry with this name
+//     } else if (typeof query_string[key] === "string") {
+//       var arr = [query_string[key], decodeURIComponent(value)];
+//       query_string[key] = arr;
+//       // If third or later entry with this name
+//     } else {
+//       query_string[key].push(decodeURIComponent(value));
+//     }
+//   }
+//   return query_string;
+// }
