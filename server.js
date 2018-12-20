@@ -17,7 +17,7 @@ app.set('view engine', 'pug')
 
 server.listen(process.env.PORT || 8000);
 
-const starting_url = "https://www.youtube.com/watch?v=1vLkX_BYzhg";
+const starting_url = "https://www.youtube.com/watch?v=j2LTY2UArsQ";
 const rooms = {};
 
 app.get("/",function(req,res){
@@ -49,9 +49,9 @@ function onConnect(socket){
         // roll back time to 0
         rooms[data.room].currTime = 0;
         // broadcast change to room
-        socket.broadcast.to(data.room).emit("change embed url",{url: data.url, user: data.user, time: printTimeStamp()});
+        socket.broadcast.to(data.room).emit("change embed url",{url: data.url, user: data.username, time: printTimeStamp()});
         // log the event in console
-        console.log(data.user + " has changed the video in " + data.room + " @ " + printTimeStamp());
+        console.log(data.username + " has changed the video in " + data.room + " @ " + printTimeStamp());
         // log the event in user interface
         fn({feedback: "You changed the video id to: " + parse_yt_url(data.url), time: printTimeStamp()});
     });
@@ -139,15 +139,15 @@ function onConnect(socket){
     socket.on("leave room",function(data){
         if(rooms[data.room] != null){
             const room = data.room;
-            const index = rooms[room].users.indexOf(data.user);
+            const index = rooms[room].users.indexOf(data.username);
             if(index > -1){
                 socket.leave(room);
                 socket.username = "";
                 socket.room = "";
                 socket.disconnect(0);
                 rooms[room].users.splice(index,1);
-                console.log(data.user + " has left the room " + room + " @ " + printTimeStamp());
-                socket.broadcast.to(room).emit("left",{message: data.user + " left", users_list: rooms[room].users, time: printTimeStamp()});
+                console.log(data.username + " has left the room " + room + " @ " + printTimeStamp());
+                socket.broadcast.to(room).emit("left",{message: data.username + " left", users_list: rooms[room].users, time: printTimeStamp()});
             }
         }
     });

@@ -1,8 +1,3 @@
-// const query = window.location.search.substring(1);
-// const qs = parse_query_string(query);
-// const username = qs.username;
-// const room = qs.room;
-
 let starting_url = "";
 let starting_time = 0;
 let starting_state = "paused";
@@ -13,7 +8,7 @@ let interval;
 
 const socket = io();
 // join the user to the room
-socket.emit("join room",{username: username,room:room},function(data){
+socket.emit("join room",{username: user,room: room},function(data){
 	if(data.status == -1){
 		alert("This room does not exist!");
 		window.location.replace("/create");
@@ -68,14 +63,14 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(event) {
 	// bind events
 	$("#play-btn").click(function() {
-		socket.emit("play video",{username:username,room:room},function(data){
+		socket.emit("play video",{username:user,room:room},function(data){
 			showNotification(data.feedback,data.time);
 		});
 		playVideo();
 	});
 
 	$("#pause-btn").click(function() {
-		socket.emit("pause video",{username:username,room:room},function(data){
+		socket.emit("pause video",{username:user,room:room},function(data){
 			showNotification(data.feedback,data.time);
 		});
 		pauseVideo();
@@ -88,7 +83,7 @@ function onPlayerReady(event) {
 function onPlayerStateChange(event){
 	if (event.data == YT.PlayerState.PLAYING) {
 		if(was_buff){
-			socket.emit("play video",{username:username,room:room},function(data){
+			socket.emit("play video",{username:user,room:room},function(data){
 				showNotification(data.feedback,data.time);
 			});
 			playVideo();
@@ -101,7 +96,7 @@ function onPlayerStateChange(event){
     }
     if(event.data == YT.PlayerState.BUFFERING){
     	was_buff = true;
-    	socket.emit("pause video",{username:username,room:room},function(data){
+    	socket.emit("pause video",{username:user,room:room},function(data){
 			showNotification(data.feedback,data.time);
 		});
     }
@@ -162,7 +157,7 @@ $(document).ready(function(){
 	$("#change-btn").on("click",function(){
 		const url_new = $("#embed-url").val();
 		if(testUrl(url_new)){
-			socket.emit("change url",{url: url_new, user: username, room: room},function(data){
+			socket.emit("change url",{url: url_new, username: user, room: room},function(data){
 				showNotification(data.feedback,data.time);
 			});
 			changeVideo(url_new);
@@ -271,7 +266,7 @@ function testUrl(website){
 }
 function closeIt()
 {
-	socket.emit("leave room",{user: username, room: room});
+	socket.emit("leave room",{username: user, room: room});
 }
 window.onunload = closeIt;
 window.onbeforeunload = closeIt;
@@ -325,25 +320,3 @@ function patseYTUrl(url){
 		return url.substring(start+1);
 	}
 }
-// // get username and room code from the link
-// function parse_query_string(query) {
-//   var vars = query.split("&");
-//   var query_string = {};
-//   for (var i = 0; i < vars.length; i++) {
-//     var pair = vars[i].split("=");
-//     var key = decodeURIComponent(pair[0]);
-//     var value = decodeURIComponent(pair[1]);
-//     // If first entry with this name
-//     if (typeof query_string[key] === "undefined") {
-//       query_string[key] = decodeURIComponent(value);
-//       // If second entry with this name
-//     } else if (typeof query_string[key] === "string") {
-//       var arr = [query_string[key], decodeURIComponent(value)];
-//       query_string[key] = arr;
-//       // If third or later entry with this name
-//     } else {
-//       query_string[key].push(decodeURIComponent(value));
-//     }
-//   }
-//   return query_string;
-// }

@@ -172,8 +172,9 @@ html
 	script(
 		src = "https://www.youtube.com/iframe_api"
 	)
-	- const room = roomID;
-	- const username = username;
+	script(type = "text/javascript").
+		const room = "#{roomID}";
+		const user = "#{username}";
 	script(
 		src="/js/room.js"
 	)
