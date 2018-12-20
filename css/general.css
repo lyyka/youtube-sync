@@ -34,7 +34,8 @@ button:hover{
 	cursor: pointer;
 }
 input{
-	padding: 10px 10px;
+	padding: 7px;
+	box-sizing: border-box;
 	outline: none;
 	border: 1px solid #d2d2d2;
 	width: 100%;
@@ -49,7 +50,7 @@ input:focus{
 	border: 1px solid #262626;
 }
 .my-btn{
-	padding: 10px 10px;
+	padding: 7px;
 	font-size: 20px;
 	border: none;
 	outline: none;
@@ -92,4 +93,10 @@ input:focus{
 }
 .align-center{
 	text-align: center;
+}
+
+@media screen and (max-width: 768px){
+	input{
+		padding: 5px;
+	}
 }

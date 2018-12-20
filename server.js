@@ -17,7 +17,7 @@ app.set('view engine', 'pug')
 
 server.listen(process.env.PORT || 8000);
 
-const starting_url = "https://www.youtube.com/watch?v=j2LTY2UArsQ";
+const starting_url = "https://www.youtube.com/watch?v=bM7SZ5SBzyY";
 const rooms = {};
 
 app.get("/",function(req,res){
