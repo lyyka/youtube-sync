@@ -130,6 +130,7 @@ socket.on("left",function(data){
 // when embed video is changed
 socket.on("change embed url",function(data){
 	changeVideo(data.url);
+	playVideo();
 	const message = data.user + " changed video id to: " + parseURL(data.url);
 	showNotification(message,data.time);
 });
@@ -201,6 +202,7 @@ $(document).ready(function(){
 				showNotification(data.feedback,data.time);
 			});
 			changeVideo(videoId);
+			playVideo();
 		}
 	});
     // change embed url
