@@ -117,40 +117,60 @@ html
 			)
 		//- video
 		section(class="section container-fluid")
-			h3(
-				align="left"
-				class="remove-margin-bottom white-text"
-			) Choose video
-			br
-			div(id="change-video-div")
-				input(
-					id="embed-url"
-					class="input"
-					type="text"
-					placeholder="Video URL"
-				)
-				button(
-					id="change-btn"
-					class="my-btn red-bg white-text"
-					type="button"
-				) Change
-			br
-			br
-			div(id="video-wrapper")
-				div(id="video")
-				div(id="controls-wrapper")
-					div(id="controls")
-						button(
-							id="play-btn"
-							type="button"
-						)
-							i(class="fas fa-play")
-						button(
-							id="pause-btn"
-							type="button"
-						)
-							i(class="fas fa-pause")
-						label(id="videoTime") video time
+			div(class="row")
+				div(class="col-lg-8")
+					h3(
+						align="left"
+						class="remove-margin-bottom black-text"
+					) Choose video
+					br
+					div(class="row")
+						div(class = "col-lg-10")
+							input(
+								id="embed-url"
+								class="input"
+								type="text"
+								placeholder="Video URL"
+							)
+						div(class = "col-lg-2")
+							button(
+								id="change-btn"
+								class="my-btn red-bg white-text full-w"
+								type="button"
+							) Change
+					div(id="video-wrapper")
+						div(id="video")
+						div(id="controls-wrapper")
+							div(id="controls")
+								button(
+									id="play-btn"
+									type="button"
+								)
+									i(class="fas fa-play")
+								button(
+									id="pause-btn"
+									type="button"
+								)
+									i(class="fas fa-pause")
+								label(id="videoTime") video time
+				div(class="col-lg-4")
+					h3(class="remove-margin-bottom") Search for a video
+					br
+					div(class="row")
+						div(class = "col-lg-6")
+							input(
+								id="search-video"
+								class="input"
+								type="text"
+								placeholder="Search text"
+							)
+						div(class = "col-lg-6")
+							button(
+								id="search-btn"
+								class="my-btn red-bg white-text full-w"
+								type="button"
+							) Search
+					div(id="video-search-results")
 		//- footer is different for when in room
 		footer
 			hr

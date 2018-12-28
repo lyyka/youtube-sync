@@ -103,7 +103,7 @@ function onConnect(socket){
             }
         }
         rooms[room] = {users: [], currVideo: starting_url, currTime: 0, state: "paused"};
-        console.log("Generated new room: " + room + " @ " + printTimeStamp());
+        console.log("New room: " + room + " @ " + printTimeStamp());
         fn(room);
     });
     // adds user to the room
@@ -148,17 +148,50 @@ function onConnect(socket){
                 rooms[room].users.splice(index,1);
                 console.log(data.username + " has left the room " + room + " @ " + printTimeStamp());
                 socket.broadcast.to(room).emit("left",{message: data.username + " left", users_list: rooms[room].users, time: printTimeStamp()});
+
+                // if room is empty (but wait for some time, in case user just refreshed the page)
+                setTimeout(removeRoomIfEmpty, 10000, room);
             }
         }
     });
 
 }
-function parse_yt_url(url){
-	var start = url.lastIndexOf('=');
-	return url.substring(start+1);
+// delete room if empty, after some period of time
+function removeRoomIfEmpty(room){
+    if(rooms[room] != undefined){
+        if(rooms[room].users.length == 0){
+            delete rooms[room];
+            console.log(room + " deleted due to no users in it");
+        }
+    }
 }
+// parse url
+function parse_yt_url(url){
+	let start = -1;
+	let rtn_url = "";
+	start = url.lastIndexOf('?v=');
+	if(start > -1){
+		// for urls like https://www.youtube.com/watch?v=PkyGvALhmyY
+		// if it has more parameters than just video ID
+		const indexOfAmp = url.indexOf("&");
+		if(indexOfAmp > -1){
+			rtn_url = url.substring(start+3, indexOfAmp);
+		}
+		else{
+			rtn_url = url.substring(start+3);
+		}
+	}
+	else{
+		// for shor url like https://youtu.be/PkyGvALhmyY
+		start = url.lastIndexOf("/");
+		rtn_url = url.substring(start+1);
+	}
+	console.log(rtn_url);
+	return rtn_url;
+}
+// print time stamp for console log messages
 function printTimeStamp(){
-	var dt = new Date();
-	var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-	return time;
+	var current_date = new Date();
+	var time_string = current_date.getHours() + ":" + current_date.getMinutes() + ":" + current_date.getSeconds();
+	return time_string;
 }

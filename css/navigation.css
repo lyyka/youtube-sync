@@ -1,5 +1,5 @@
 body{
-  padding-top: 49px;
+  padding-top: 100px;
 }
 #navigation{
   position: absolute;
@@ -8,7 +8,7 @@ body{
   width: 100%;
   z-index: 1000;
 	padding: 15px 0px;
-	background-color: white;
+  background-color: white;
 }
 #navigation > #navigation-inner{
   height: 49px;

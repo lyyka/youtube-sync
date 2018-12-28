@@ -42,7 +42,7 @@ socket.emit("join room",{username: user,room: room},function(data){
 
 let player;
 function onYouTubeIframeAPIReady() {
-	const video_id = patseYTUrl(starting_url);
+	const video_id = parseURL(starting_url);
 	player = new YT.Player('video', {
 	  height: '500',
 	  width: '100%',
@@ -130,7 +130,7 @@ socket.on("left",function(data){
 // when embed video is changed
 socket.on("change embed url",function(data){
 	changeVideo(data.url);
-	const message = data.user + " changed video id to: " + patseYTUrl(data.url);
+	const message = data.user + " changed video id to: " + parseURL(data.url);
 	showNotification(message,data.time);
 });
 // receive video state change event
@@ -140,17 +140,67 @@ socket.on("video state change",function(data){
 	}
 });
 $(document).ready(function(){
-	// FIX URL CHANGE BUTTON
-	$("#change-btn").height($("#embed-url").height() + 2);
-	//$(".notification-card-wrapper").find(".clear-notification").height($(".notification-card-wrapper").find(".card"));
+	// set title
 	$("title").html("Room - " + room);
+	// set padding for body on bottom
 	$("body").css("padding-bottom",$("#footer").height()+50);
+	// on resize fix padding for footer
 	$(window).resize(function(){
 		if($(window).width() <= 770){
 			$("body").css("padding-bottom",$("#footer").height()+50+10);
 		}
 		else{
 			$("body").css("padding-bottom",$("#footer").height()+50);
+		}
+	});
+	// search yt api
+	$("#search-btn").click(function(){
+		// reference
+		// https://developers.google.com/youtube/v3/docs/search/list#usage
+		//
+		const q = $("#search-video").val();
+		if(q != undefined && q.trim().length > 0){
+			$("#video-search-results").empty();
+			const search_request = $.get({
+				url: "https://www.googleapis.com/youtube/v3/search",
+				data: {
+					part: "snippet",
+					maxResults: 50,
+					q: q,
+					type: "video",
+					videoEmbeddable: "true",
+					videoSyndicated: "true",
+					key: "AIzaSyAayCuwKXQgIRrj2xB8WbReNj6lLffs1-A"
+				}
+			});
+			search_request.done(function(data){
+				data.items.forEach(search_result => {
+					
+					const thumbnail = search_result.snippet.thumbnails.default.url;
+					const title = search_result.snippet.title;
+					const channelTitle = search_result.snippet.channelTitle;
+					const videoId = search_result.id.videoId;
+
+					$("#video-search-results").append(
+						'<div class = "yt-search-result-card"><div class = "yt-search-result-card-inner"><img src = "' + thumbnail + '" class = "img-fluid" /><br /><h4>' + title + '</h4><p>' + channelTitle + '</p><input type = "text" class = "video-id-input hide" value = "' + videoId + '" /></div></div>'
+					);
+				});
+			});
+			search_request.fail(function(data){
+				console.log(data);
+				$("#video-search-results").append("<h3 class = 'align-center'>Error</h3>");
+			});
+		}
+	});
+	// on click on search result card
+	$("#video-search-results").on("click", "div.yt-search-result-card", function(){
+		let videoId = $(this).find(".video-id-input").val();
+		if(videoId.length > 0){
+			videoId = "?v=" + videoId;
+			socket.emit("change url",{url: videoId, username: user, room: room},function(data){
+				showNotification(data.feedback,data.time);
+			});
+			changeVideo(videoId);
 		}
 	});
     // change embed url
@@ -205,14 +255,12 @@ $(document).ready(function(){
 			$(".ws-div").fadeOut(500);
 	    }
 	});
-	//fixNotificationCards();
 });
 
 function playVideo(){
 	socket.emit("get video time",{room: room},function(data){
 		const seekTime = data.videoTime;
 		if(seekTime > player.getCurrentTime()){
-			console.log(seekTime + " ? " + player.getCurrentTime());
 			player.seekTo(data.videoTime,true);
 			player.playVideo();
 		}
@@ -224,10 +272,13 @@ function playVideo(){
 function pauseVideo(){
 	player.pauseVideo();
 }
-function changeVideo(url_new){
-	const id = patseYTUrl(url_new);
-    player.seekTo(0, true);
-	player.cueVideoById(id);
+function changeVideo(videoUrlOrID){
+	let new_video_id = "";
+	new_video_id = parseURL(videoUrlOrID);
+	if(new_video_id.length > 0){
+		player.seekTo(0, true);
+		player.cueVideoById(new_video_id);
+	}
 }
 function refreshUsersList(users_list){
 	$("#users-list").find(".card").remove();
@@ -238,7 +289,7 @@ function refreshUsersList(users_list){
 function showNotification(text,time){
 	$("#notification-list").find(".no-notif-text").remove();
 	$("#clear-all-notifications").show();
-	$("#notification-list").append('<div class="notification-card-wrapper"><label class="card">' + text + '</label><button type="button" class="my-btn fill-red clear-notification">Clear</button></div>');
+	$("#notification-list").append('<div class="notification-card-wrapper"><label class="card">' + text + ' @ ' + time + '</label><button type="button" class="my-btn fill-red clear-notification">Clear</button></div>');
 	fixNotificationCards();
 }
 function fixNotificationCards(){
@@ -261,7 +312,6 @@ function addUser(username){
 	$("#users-list").append('<label class = "card">' + username + '</label>');
 }
 function testUrl(website){
-	//return true;
 	return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(website);
 }
 function closeIt()
@@ -280,13 +330,16 @@ function updateVideoState(){
 	final += resp.mins + ":";
 	final += resp.secs;
 	// final for length
-	var duration = parseTime(player.getDuration());
+	const duration = parseTime(player.getDuration());
 	var finalDuration = "";
 	if(duration.hours > 0){
 		finalDuration += duration.hours + ":";
 	}
 	finalDuration += duration.mins + ":";
 	finalDuration += duration.secs;
+	if(final == finalDuration){
+		clearInterval(interval);
+	}
 	$("#videoTime").html(final + " / " + finalDuration);
 	socket.emit("update video time",{videoTime: player.getCurrentTime(), room: room});
 }
@@ -308,15 +361,25 @@ function parseTime(seconds){
 	return {hours: hours, mins: mins, secs: secs}
 }
 // returns videos id from the string
-function patseYTUrl(url){
-	var start = -1;
-	if(url.indexOf('=') == -1){
-		start = url.lastIndexOf('/');
+function parseURL(url){
+	let start = -1;
+	let rtn_url = "";
+	start = url.lastIndexOf('?v=');
+	if(start > -1){
+		// for urls like https://www.youtube.com/watch?v=PkyGvALhmyY
+		// if it has more parameters than just video ID
+		const indexOfAmp = url.indexOf("&");
+		if(indexOfAmp > -1){
+			rtn_url = url.substring(start+3, indexOfAmp);
+		}
+		else{
+			rtn_url = url.substring(start+3);
+		}
 	}
 	else{
-		start = url.lastIndexOf('=');
+		// for shor url like https://youtu.be/PkyGvALhmyY
+		start = url.lastIndexOf("/");
+		rtn_url = url.substring(start+1);
 	}
-	if(start != -1){
-		return url.substring(start+1);
-	}
+	return rtn_url;
 }

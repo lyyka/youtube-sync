@@ -43,26 +43,21 @@ html
 				h3(
 					align="left"
 				) Create new room
-				div(class="row")
-					div(class="col-md-10")
-						input(
-							id="room-code-input"
-							type="text"
-							placeholder="Room code"
-						)
-					div(class="col-md-2")
-						button(
-							id="copy-room-code"
-							type="button"
-							class="my-btn full-w white-text black-bg"
-						) Copy
-				label(id="feedback")
-				br
+				input(
+					readonly
+					id="room-code-input"
+					type="text"
+					placeholder="Room code"
+				)
 				button(
 					id="generate-room-code"
 					type="button"
 					class="my-btn full-w red-bg white-text" 
 				) Create a room!
+				div(id="after-creation")
+					div(id="room-qr-code")
+					div
+						p(id="feedback")
 		include ../includes/footer.pug
 	script(
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
@@ -76,6 +71,9 @@ html
 		src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"
 		integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0="
 		crossorigin="anonymous"
+	)
+	script(
+		src="/js/qrcode.min.js"
 	)
 	script(
 		src="/js/footer.js"
