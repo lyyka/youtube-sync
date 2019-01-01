@@ -125,7 +125,7 @@ function onConnect(socket){
                 // log in console
                 console.log(username + " has joind the room " + room + " @ " + printTimeStamp());
                 // send joined user info about the room
-                fn({status: 1, videoUrl: rooms[room].currVideo, videoTime: rooms[room].currTime, state: rooms[room].state, usersList: rooms[room].users, message: "You joined the room!", time: printTimeStamp()});
+                fn({status: 1, videoUrl: rooms[room].currVideo, videoTime: rooms[room].currTime, state: rooms[room].state, usersList: rooms[room].users, message: "You joined the room!"});
             }
             else{
                 fn({status: 0, time: null});

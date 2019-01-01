@@ -118,7 +118,7 @@ html
 		//- video
 		section(class="section container-fluid")
 			div(class="row")
-				div(class="col-lg-8")
+				div(class="col-xl-8")
 					h3(
 						align="left"
 						class="remove-margin-bottom black-text"
@@ -140,21 +140,20 @@ html
 							) Change
 					div(id="video-wrapper")
 						div(id="video")
+						div(id="yt-block")
 						div(id="controls-wrapper")
+							div(id="video-slider")
+								div(id="video-slider-front")
+								div(id="video-slider-back")
 							div(id="controls")
 								button(
-									id="play-btn"
-									type="button"
-								)
-									i(class="fas fa-play")
-								button(
-									id="pause-btn"
+									id="video-toggle"
 									type="button"
 								)
 									i(class="fas fa-pause")
-								label(id="videoTime") video time
-				div(class="col-lg-4")
-					h3(class="remove-margin-bottom") Search for a video
+								label(id="video-time") video time
+				div(class="col-xl-4")
+					h3(class="remove-margin-bottom") Search YouTube
 					br
 					div(class="row")
 						div(class = "col-lg-6")
@@ -171,6 +170,7 @@ html
 								type="button"
 							) Search
 					div(id="video-search-results")
+						h3(id="start-searching-text") Start searching for a video...
 		//- footer is different for when in room
 		footer
 			hr

@@ -1,6 +1,11 @@
+let video_playing = true;
+
 let starting_url = "";
 let starting_time = 0;
 let starting_state = "paused";
+
+let current_video_duration;
+let current_video_duration_string;
 
 let was_buff = false;
 
@@ -18,14 +23,13 @@ socket.emit("join room",{username: user,room: room},function(data){
 		window.location.replace("/join");
 	}
 	if(data.status == 1){
-		showNotification(data.message,data.time);
+		showNotification(data.message);
 		starting_url = data.videoUrl;
 		var users_list = data.usersList;
 		refreshUsersList(users_list);
 		starting_time = data.videoTime;
 		starting_state = data.state;
 		// load the qr code
-        // for now qr code is returning only the room number
         const qrcode = new QRCode(document.getElementById("room-qr-code"), {
             text: "http://you-sync.herokuapp.com/join/" + room,
             width: 128,
@@ -62,18 +66,21 @@ function onYouTubeIframeAPIReady() {
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
 	// bind events
-	$("#play-btn").click(function() {
-		socket.emit("play video",{username:user,room:room},function(data){
-			showNotification(data.feedback,data.time);
-		});
-		playVideo();
-	});
-
-	$("#pause-btn").click(function() {
-		socket.emit("pause video",{username:user,room:room},function(data){
-			showNotification(data.feedback,data.time);
-		});
-		pauseVideo();
+	$("#video-toggle").click(function(){
+		if(video_playing){
+			socket.emit("pause video",{username:user,room:room},function(data){
+				showNotification(data.feedback,data.time);
+			});
+			pauseVideo();
+		}
+		else{
+			socket.emit("play video",{username:user,room:room},function(data){
+				showNotification(data.feedback,data.time);
+			});
+			playVideo();
+		}
+		video_playing = !video_playing;
+		// $(this).find("i.fas").toggleClass("fa-play fa-pause");
 	});
 	changeVideo(starting_url);
 	pauseVideo();
@@ -89,7 +96,9 @@ function onPlayerStateChange(event){
 			playVideo();
 			was_buff = false;
 		}
-      	interval = setInterval(updateVideoState, 500);
+		// set interval
+		setVideoDuration();
+      	interval = setInterval(updateVideoState, 1000);
     }
 	if (event.data == YT.PlayerState.PAUSED) {
 		clearInterval(interval);
@@ -203,6 +212,7 @@ $(document).ready(function(){
 			});
 			changeVideo(videoId);
 			playVideo();
+			setVideoDuration();
 		}
 	});
     // change embed url
@@ -213,6 +223,8 @@ $(document).ready(function(){
 				showNotification(data.feedback,data.time);
 			});
 			changeVideo(url_new);
+			playVideo();
+			setVideoDuration();
 		}
 	});
     // leave room
@@ -224,7 +236,7 @@ $(document).ready(function(){
     // open notifications
 	$("#show-notify").click(function(){
 		$("#notification-list-wrapper").fadeIn(500);
-		fixNotificationCards();
+		// fixNotificationCards();
 	});
     // see all users
 	$("#show-users").click(function(){
@@ -260,6 +272,8 @@ $(document).ready(function(){
 });
 
 function playVideo(){
+	$("#video-toggle").find("i.fas").removeClass("fa-play");
+	$("#video-toggle").find("i.fas").addClass("fa-pause");
 	socket.emit("get video time",{room: room},function(data){
 		const seekTime = data.videoTime;
 		if(seekTime > player.getCurrentTime()){
@@ -272,6 +286,8 @@ function playVideo(){
 	});
 }
 function pauseVideo(){
+	$("#video-toggle").find("i.fas").addClass("fa-play");
+	$("#video-toggle").find("i.fas").removeClass("fa-pause");
 	player.pauseVideo();
 }
 function changeVideo(videoUrlOrID){
@@ -288,11 +304,11 @@ function refreshUsersList(users_list){
 		addUser(users_list[i]);
 	}
 }
-function showNotification(text,time){
+function showNotification(text){
 	$("#notification-list").find(".no-notif-text").remove();
 	$("#clear-all-notifications").show();
-	$("#notification-list").append('<div class="notification-card-wrapper"><label class="card">' + text + ' @ ' + time + '</label><button type="button" class="my-btn fill-red clear-notification">Clear</button></div>');
-	fixNotificationCards();
+	$("#notification-list").append('<div class="notification-card-wrapper"><label class="card">' + text + '</label><button type="button" class="my-btn fill-red clear-notification"><i class = "fas fa-times"></i></button></div>');
+	// fixNotificationCards();
 }
 function fixNotificationCards(){
 	// FIX NOTIFICATION BUTTONS
@@ -323,34 +339,41 @@ function closeIt()
 window.onunload = closeIt;
 window.onbeforeunload = closeIt;
 function updateVideoState(){
-	var resp = parseTime(player.getCurrentTime());
-	// final for current time
-	var final = "";
-	if(resp.hours > 0){
-		final += resp.hours + ":";
+	// get current time
+	const get_current_time = player.getCurrentTime();
+	const current_time = parseTime(get_current_time);
+	let final = "";
+	if(current_time.hours > 0){
+		final += current_time.hours + ":";
 	}
-	final += resp.mins + ":";
-	final += resp.secs;
-	// final for length
-	const duration = parseTime(player.getDuration());
-	var finalDuration = "";
-	if(duration.hours > 0){
-		finalDuration += duration.hours + ":";
-	}
-	finalDuration += duration.mins + ":";
-	finalDuration += duration.secs;
-	if(final == finalDuration){
-		clearInterval(interval);
-	}
-	$("#videoTime").html(final + " / " + finalDuration);
+	final += current_time.mins + ":";
+	final += current_time.secs;
+	// update video timeline
+	const percent = (get_current_time/current_video_duration)*100;
+	$("#video-slider-front").width(percent + "%");
+	// change time label
+	$("#video-time").html(final + " / " + current_video_duration_string);
+	// emit the updated time
 	socket.emit("update video time",{videoTime: player.getCurrentTime(), room: room});
 }
+function setVideoDuration(){
+	// get the video duration
+	const getDuration  = player.getDuration();
+	const duration = parseTime(getDuration);
+	current_video_duration = getDuration; 
+	current_video_duration_string = "";
+	if(duration.hours > 0){
+		current_video_duration_string += duration.hours + ":";
+	}
+	current_video_duration_string += duration.mins + ":";
+	current_video_duration_string += duration.secs;
+}
 function parseTime(seconds){
-	var hours = Math.floor(seconds/3600);
+	let hours = Math.floor(seconds/3600);
 	seconds -= hours*3600;
-	var mins = Math.floor(seconds/60);
+	let mins = Math.floor(seconds/60);
 	seconds -= mins*60;
-	var secs = Math.floor(seconds);
+	let secs = Math.floor(seconds);
 	if(hours < 10){
 		hours = "0"+hours;
 	}
@@ -360,7 +383,7 @@ function parseTime(seconds){
 	if(secs<10){
 		secs = "0"+secs;
 	}
-	return {hours: hours, mins: mins, secs: secs}
+	return { hours: hours, mins: mins, secs: secs }
 }
 // returns videos id from the string
 function parseURL(url){
