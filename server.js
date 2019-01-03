@@ -39,7 +39,7 @@ app.get("/room/:roomID/:username", function(req,res){
     const username = req.params.username;
     res.render("room",{roomID: roomID, username: username});
 });
-// io
+// socket io on connection
 io.on("connection", onConnect);
 function onConnect(socket){
     // changes vide url for all users in a room
@@ -53,7 +53,7 @@ function onConnect(socket){
         // log the event in console
         console.log(data.username + " has changed the video in " + data.room + " @ " + printTimeStamp());
         // log the event in user interface
-        fn({feedback: "You changed the video id to: " + parse_yt_url(data.url), time: printTimeStamp()});
+        fn({feedback: "You changed the video id to: " + parseYouTubeURL(data.url), time: printTimeStamp()});
     });
     // play video
     socket.on("play video",function(data,fn){
@@ -83,7 +83,7 @@ function onConnect(socket){
     socket.on("update video time",function(data){
         if(data.videoTime != null && data.room != null){
             let room = data.room;
-            if(rooms[room] != null && data.videoTime > rooms[room].currTime){
+            if(rooms[room] != null){
                 rooms[room].currTime = data.videoTime;
             }
         }
@@ -166,7 +166,7 @@ function removeRoomIfEmpty(room){
     }
 }
 // parse url
-function parse_yt_url(url){
+function parseYouTubeURL(url){
 	let start = -1;
 	let rtn_url = "";
 	start = url.lastIndexOf('?v=');

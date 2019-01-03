@@ -1,11 +1,14 @@
-let video_playing = true;
-
 let starting_url = "";
 let starting_time = 0;
 let starting_state = "paused";
 
-let current_video_duration;
-let current_video_duration_string;
+let video = {
+	playing: true,
+	duration: {
+		value: 0,
+		string: "00:00:00"
+	}
+}
 
 let was_buff = false;
 
@@ -67,7 +70,7 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(event) {
 	// bind events
 	$("#video-toggle").click(function(){
-		if(video_playing){
+		if(video.playing){
 			socket.emit("pause video",{username:user,room:room},function(data){
 				showNotification(data.feedback,data.time);
 			});
@@ -79,7 +82,7 @@ function onPlayerReady(event) {
 			});
 			playVideo();
 		}
-		video_playing = !video_playing;
+		video.playing = !video.playing;
 		// $(this).find("i.fas").toggleClass("fa-play fa-pause");
 	});
 	changeVideo(starting_url);
@@ -215,6 +218,28 @@ $(document).ready(function(){
 			setVideoDuration();
 		}
 	});
+	// seek on click
+	$("#video-slider").click(function(e){
+		clearInterval(interval);
+		let offset = $(this).offset();
+		let left = Math.abs(e.pageX - offset.left);
+		let totalWidth = $("#video-slider").width();
+		let percentage = ( left / totalWidth );
+		socket.emit("update video time",{
+			videoTime: video.duration.value * percentage,
+			room: room
+		});
+		player.seekTo(video.duration.value * percentage, true);
+		playVideo();
+		interval = setInterval(updateVideoState, 1000);
+	});
+	// hide and show controls
+	$("#video-wrapper").mouseenter(function(){
+		$("#controls-wrapper").fadeIn(300);
+	});
+	$("#video-wrapper").mouseleave(function(){
+		$("#controls-wrapper").fadeOut(300);
+	});
     // change embed url
 	$("#change-btn").on("click",function(){
 		const url_new = $("#embed-url").val();
@@ -274,6 +299,7 @@ $(document).ready(function(){
 function playVideo(){
 	$("#video-toggle").find("i.fas").removeClass("fa-play");
 	$("#video-toggle").find("i.fas").addClass("fa-pause");
+	// gets current time from server, if it is in front of current local time, it will seek to it.
 	socket.emit("get video time",{room: room},function(data){
 		const seekTime = data.videoTime;
 		if(seekTime > player.getCurrentTime()){
@@ -310,34 +336,36 @@ function showNotification(text){
 	$("#notification-list").append('<div class="notification-card-wrapper"><label class="card">' + text + '</label><button type="button" class="my-btn fill-red clear-notification"><i class = "fas fa-times"></i></button></div>');
 	// fixNotificationCards();
 }
-function fixNotificationCards(){
-	// FIX NOTIFICATION BUTTONS
-	let wrappers = $(".notification-card-wrapper");
-	for (var i = wrappers.length - 1; i >= 0; i--) {
-		let wrapper = wrappers.eq(i);
+// function fixNotificationCards(){
+// 	// FIX NOTIFICATION BUTTONS
+// 	let wrappers = $(".notification-card-wrapper");
+// 	for (var i = wrappers.length - 1; i >= 0; i--) {
+// 		let wrapper = wrappers.eq(i);
 
-		// fix button
-		let label = wrapper.find(".card");
-		let button = wrapper.find(".clear-notification");
-		label.css("padding-right", button.width() + 5);
-		button.height(label.height()+2);
+// 		// fix button
+// 		let label = wrapper.find(".card");
+// 		let button = wrapper.find(".clear-notification");
+// 		label.css("padding-right", button.width() + 5);
+// 		button.height(label.height()+2);
 
-		// fix margin of the card
-		wrapper.height(label.height()*2);
-	}
-}
+// 		// fix margin of the card
+// 		wrapper.height(label.height()*2);
+// 	}
+// }
 function addUser(username){
 	$("#users-list").append('<label class = "card">' + username + '</label>');
 }
 function testUrl(website){
 	return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(website);
 }
+// on close remove user
 function closeIt()
 {
 	socket.emit("leave room",{username: user, room: room});
 }
 window.onunload = closeIt;
 window.onbeforeunload = closeIt;
+// update video state each second
 function updateVideoState(){
 	// get current time
 	const get_current_time = player.getCurrentTime();
@@ -349,10 +377,10 @@ function updateVideoState(){
 	final += current_time.mins + ":";
 	final += current_time.secs;
 	// update video timeline
-	const percent = (get_current_time/current_video_duration)*100;
+	const percent = (get_current_time/video.duration.value)*100;
 	$("#video-slider-front").width(percent + "%");
 	// change time label
-	$("#video-time").html(final + " / " + current_video_duration_string);
+	$("#video-time").html(final + " / " + video.duration.string);
 	// emit the updated time
 	socket.emit("update video time",{videoTime: player.getCurrentTime(), room: room});
 }
@@ -360,13 +388,13 @@ function setVideoDuration(){
 	// get the video duration
 	const getDuration  = player.getDuration();
 	const duration = parseTime(getDuration);
-	current_video_duration = getDuration; 
-	current_video_duration_string = "";
+	video.duration.value = getDuration; 
+	video.duration.string = "";
 	if(duration.hours > 0){
-		current_video_duration_string += duration.hours + ":";
+		video.duration.string += duration.hours + ":";
 	}
-	current_video_duration_string += duration.mins + ":";
-	current_video_duration_string += duration.secs;
+	video.duration.string += duration.mins + ":";
+	video.duration.string += duration.secs;
 }
 function parseTime(seconds){
 	let hours = Math.floor(seconds/3600);
