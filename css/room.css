@@ -1,4 +1,7 @@
 /* general */
+.remove-scroll{
+	overflow: hidden;
+}
 .remove-margin-bottom{
 	margin-bottom: 0px;
 }
@@ -87,6 +90,7 @@
 #controls button:hover, #controls label:hover{
 	cursor: pointer;
 }
+/* video slider */
 #video-slider{
 	cursor: pointer;
 	position: relative;
@@ -124,9 +128,18 @@
 	width: 100%;
 	background-color: #b3b3b3;
 }
+#video-time-preview{
+	z-index: 150;
+	position: absolute;
+	display: none;
+	background-color: rgba(0,0,0,0.4);
+	padding: 3px;
+	color: white;
+}
 /* notifications and users wrappers */
 #notification-list, #users-list{
 	overflow-y: auto;
+	max-height: 100%;
 }
 #notification-list-wrapper, #users-list-wrapper{
 	display: none;

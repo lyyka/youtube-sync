@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.set('view engine', 'pug')
 
-server.listen(process.env.PORT || 8000);
+server.listen(process.env.PORT || 8000, "0.0.0.0");
 
 const starting_url = "https://www.youtube.com/watch?v=bM7SZ5SBzyY";
 const rooms = {};
@@ -44,38 +44,55 @@ io.on("connection", onConnect);
 function onConnect(socket){
     // changes vide url for all users in a room
     socket.on("change url",function(data,fn){
-        // change url for room
-        rooms[data.room].currVideo = data.url;
-        // roll back time to 0
-        rooms[data.room].currTime = 0;
-        // broadcast change to room
-        socket.broadcast.to(data.room).emit("change embed url",{url: data.url, user: data.username, time: printTimeStamp()});
-        // log the event in console
-        console.log(data.username + " has changed the video in " + data.room + " @ " + printTimeStamp());
-        // log the event in user interface
-        fn({feedback: "You changed the video id to: " + parseYouTubeURL(data.url), time: printTimeStamp()});
+        if(rooms[data.room]){
+            // change url for room
+            rooms[data.room].currVideo = data.url;
+            // roll back time to 0
+            rooms[data.room].currTime = 0;
+            // broadcast change to room
+            socket.broadcast.to(data.room).emit("change embed url",{url: data.url, user: data.username, time: printTimeStamp()});
+            // log the event in console
+            console.log(data.username + " has changed the video in " + data.room + " @ " + printTimeStamp());
+            // log the event in user interface
+            fn({feedback: "You changed the video id to: " + parseYouTubeURL(data.url), time: printTimeStamp()});
+        }
     });
     // play video
     socket.on("play video",function(data,fn){
-        // change state of the room to playing
-        rooms[data.room].state = "playing";
-        // broadcast change to room
-        socket.broadcast.to(data.room).emit("control",{user: data.username, control: "play", time: printTimeStamp()});
-        // log the event in console
-        console.log(data.username + " has played the video in " + socket.room + " @ " + printTimeStamp());
-        // log the event in user interface
-        fn({feedback: "You have played the video", time: printTimeStamp()});
+        if(rooms[data.room]){
+            // change state of the room to playing
+            rooms[data.room].state = "playing";
+            // broadcast change to room
+            socket.broadcast.to(data.room).emit("control",{user: data.username, control: "play", time: printTimeStamp()});
+            // log the event in console
+            console.log(data.username + " has played the video in " + data.room + " @ " + printTimeStamp());
+            // log the event in user interface
+            fn({feedback: "You have played the video", time: printTimeStamp()});
+        }
     });
     // pause video
     socket.on("pause video",function(data,fn){
-        rooms[data.room].state = "paused";
-        socket.broadcast.to(data.room).emit("control",{user: data.username, control: "pause", time: printTimeStamp()});
-        console.log(data.username + " has paused the video in " + socket.room + " @ " + printTimeStamp());
-        // log the event in user interface
-        fn({feedback: "You have paused the video", time: printTimeStamp()});
+        if(rooms[data.room]){
+            rooms[data.room].state = "paused";
+            socket.broadcast.to(data.room).emit("control",{user: data.username, control: "pause", time: printTimeStamp()});
+            console.log(data.username + " has paused the video in " + data.room + " @ " + printTimeStamp());
+            // log the event in user interface
+            fn({feedback: "You have paused the video", time: printTimeStamp()});
+        }
     });
+    // sync rooms on seek
+    socket.on("sync on seek", function(data){
+        if(rooms[data.room]){
+            // update time in room
+            rooms[data.room].currTime = data.videoTime;
+            socket.broadcast.to(data.room).emit("sync",{
+                videoTime: data.videoTime
+            });
+        }
+    });
+    // get current video time in room
     socket.on("get video time",function(data,fn){
-        if(rooms[data.room] != null){
+        if(rooms[data.room]){
             fn({videoTime: rooms[data.room].currTime});
         }
     });
