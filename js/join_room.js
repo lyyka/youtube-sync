@@ -1,22 +1,40 @@
 $(document).ready(function(){
-	$("#join-room").click(function(){
-		const username = $("#username-input").val();
-		const code = $("#room-code-input").val();
-		if(ValidateInput(username,code)){
-			window.location.replace("/room/" + code + "/" + username);
-		}
-	});
+	$("#join-room").click(joinRoom);
 });
-function ValidateInput(username,code){
-	let valid = true;
-	if(username.length == 0){
-		valid = false;
+
+function joinRoom(){
+	if(joinModule.validateInput()){
+		window.location.replace("/room/" + joinModule.fields.code.val() + "/" + joinModule.fields.username.val());
 	}
-	if(code.length != 7 || !validCode(code)){
-		valid = false;
+}
+
+joinModule = (function(){
+
+	const fields = {
+		'username': $("#username-input"),
+		'code': $("#room-code-input")
+	};
+
+	const validateInput = function(){
+		let valid = true;
+		if (fields.username.val().length == 0) {
+			valid = false;
+		}
+		if (fields.code.val().length != 7 || !validCode(fields.code.val())) {
+			valid = false;
+		}
+		return valid;
 	}
-	return valid;
-}
-function validCode(str){
-	return /^\w+$/.test(str);
-}
+
+	const validCode = function(code){
+		return /^\w+$/.test(code);
+	}
+
+	const api = {
+		'validateInput': validateInput,
+		'fields': fields
+	}
+
+	return api;
+
+})();
