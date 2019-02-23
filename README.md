@@ -17,4 +17,4 @@ App uses [socket.io](https://socket.io/) to communicate and sync all users in a 
 
 For back-end we use [node.js](https://nodejs.org/en/) and [express](https://expressjs.com/).
 
-For front-end we user [PUG](https://pugjs.org/api/getting-started.html) files as they are easy to write, layouts can be created, and node.js and express
+For front-end we user [PUG](https://pugjs.org/api/getting-started.html) files as they are easy to write, layouts can be created, and node.js and express provide great support of sending information from back-end to .pug files.
