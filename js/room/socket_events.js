@@ -1,7 +1,20 @@
 class SocketEvents{
 
-    constructor(){
-        
+    constructor(room){
+        this.room = room;
+        this.socket = room.socket;
+
+        this.joinRoom = this.joinRoom.bind(this);
+        this.userLeftRoom = this.userLeftRoom.bind(this);
+        this.playVideo = this.playVideo.bind(this);
+        this.pauseVideo = this.pauseVideo.bind(this);
+        this.updateVideoTime = this.updateVideoTime.bind(this);
+        this.onSync = this.onSync.bind(this);
+        this.onControl = this.onControl.bind(this);
+        this.onJoined = this.onJoined.bind(this);
+        this.someoneLeft = this.someoneLeft.bind(this);
+        this.embedURLChanged = this.embedURLChanged.bind(this);
+        this.videoStateChanged = this.videoStateChanged.bind(this);
     }
 
     // EMITTERS
@@ -13,15 +26,15 @@ class SocketEvents{
             window.location.replace("/join");
         }
         if (data.status == 1) {
-            addNotification(data.message);
-            this.starting_url = data.videoUrl;
+            this.room.addNotification(data.message);
+            this.room.starting_url = data.videoUrl;
             var users_list = data.usersList;
-            refreshUsersList(users_list);
-            this.starting_time = data.videoTime;
-            this.starting_state = data.state;
+            this.room.refreshUsersList(users_list);
+            this.room.starting_time = data.videoTime;
+            this.room.starting_state = data.state;
             // load the qr code
             const qrcode = new QRCode(document.getElementById("room-qr-code"), {
-                text: "http://you-sync.herokuapp.com/join/" + room,
+                text: "http://" + window.location.hostname + "/join/" + room,
                 width: 128,
                 height: 128,
                 colorDark: "#000000",
@@ -32,47 +45,71 @@ class SocketEvents{
         }
     }
 
+    userLeftRoom(){
+		this.socket.emit("leave room",{username: this.room.username, room: this.room.roomId});
+    }
+
+    playVideo(){
+        const room = this.room;
+        this.socket.emit("play video", { username: this.room.username, room: this.room.roomId }, function (data) {
+            room.addNotification(data.feedback, data.time);
+        });
+    }
+
+    pauseVideo(){
+        const room = this.room;
+        this.socket.emit("pause video", { username: this.room.username, room: this.room.roomId }, function (data) {
+            room.addNotification(data.feedback, data.time);
+        });
+    }
+
+    updateVideoTime(player){
+        this.socket.emit("update video time",{videoTime: player.getCurrentTime(), room: this.room.roomId});
+    }
+
     // LISTENERS
     onSync(data){
         if (data.videoTime) {
             player.seekTo(data.videoTime, true);
-            playVideo();
+            this.room.player.playVideo();
         }
     }
 
     onControl(data){
-        let message = data.user;
         if (data.control == "play") {
-            message += " played the video.";
-            playVideo();
+            console.log("play control");
+            
+            data.user += " played the video.";
+            this.room.player.playVideo();
         }
         if (data.control == "pause") {
-            message += " paused the video.";
-            pauseVideo();
+            console.log("pause control");
+            data.user += " paused the video.";
+            this.room.player.pauseVideo();
         }
-        addNotification(message, data.time);
+        this.room.addNotification(data.user, data.time);
     }
 
     onJoined(data){
-        addNotification(data.message, data.time);
-        refreshUsersList(data.users_list);
+        this.room.addNotification(data.message, data.time);
+        this.room.refreshUsersList(data.users_list);
     }
 
     someoneLeft(data){
-        addNotification(data.message, data.time);
-        refreshUsersList(data.users_list);
+        this.room.addNotification(data.message, data.time);
+        this.room.refreshUsersList(data.users_list);
     }
 
     embedURLChanged(data){
-        changeVideo(data.url);
-        playVideo();
-        const message = data.user + " changed video id to: " + parseURL(data.url);
-        addNotification(message, data.time);
+        this.room.player.changeVideo(data.url);
+        this.room.player.playVideo();
+        const message = data.user + " changed video id to: " + this.room.player.parseURL(data.url);
+        this.room.addNotification(message, data.time);
     }
 
     videoStateChanged(data){
         if (data.state != null) {
-            player.seekTo(data.state, true);
+            this.room.player.seekTo(data.state, true);
         }
     }
 }
