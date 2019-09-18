@@ -39,7 +39,7 @@ input{
 	outline: none;
 	border: 1px solid #d2d2d2;
 	width: 100%;
-	font-size: 20px !important;
+	font-size: 18px !important;
 	margin-bottom: 15px !important;
 	-ms-transition:border,0.4s;
 	-moz-transition:border,0.4s;
@@ -66,9 +66,6 @@ input:focus{
 .red-text{
 	color: red;
 }
-.white-text{
-	color: white;
-}
 .black-text{
 	color: #262626;
 }
@@ -87,12 +84,6 @@ input:focus{
 	transform: -moz-translate(-50%,-50%);
 	transform: -ms-translate(-50%,-50%);
 	transform: translate(-50%,-50%);
-}
-.full-w{
-	width: 100%;
-}
-.align-center{
-	text-align: center;
 }
 
 @media screen and (max-width: 768px){

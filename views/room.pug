@@ -16,12 +16,7 @@ html
 			crossorigin="anonymous"
 		)
 		//- bootstrap
-		link(
-			rel="stylesheet"
-			href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-			integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
-			crossorigin="anonymous"
-		)
+		include ../includes/bootstrap_css.pug
 		link(
 			rel = "stylesheet"
 			href = "/css/room.css"
@@ -73,7 +68,7 @@ html
 								| &nbsp;Users
 						li(class="nav-item")
 							a(
-								class="white-text red-bg nav-button"
+								class="text-white red-bg nav-button"
 								href="/join"
 								id = "leave-room"
 							) Leave room
@@ -84,11 +79,11 @@ html
 		)
 			div(class="container")
 				p(align="right")
-					span(class="white-text cursor-pointer ws-div-control close-ws-div")
+					span(class="text-white cursor-pointer ws-div-control close-ws-div")
 						i(class="fas fa-times") 
 						| &nbsp;Close
 					span(
-						class="white-text cursor-pointer ws-div-control"
+						class="text-white cursor-pointer ws-div-control"
 						id="clear-all-notifications"
 					)
 						i(class="fas fa-broom") 
@@ -104,7 +99,7 @@ html
 		)
 			div(class="container")
 				p(align="right")
-					span(class="white-text cursor-pointer ws-div-control close-ws-div")
+					span(class="text-white cursor-pointer ws-div-control close-ws-div")
 						i(class="fas fa-times")
 						| &nbsp;Close
 			div(
@@ -124,14 +119,14 @@ html
 						div(class = "col-lg-10")
 							input(
 								id="embed-url"
-								class="input"
+								class="input p-2 rounded shadow-sm border"
 								type="text"
 								placeholder="Video URL"
 							)
 						div(class = "col-lg-2")
 							button(
 								id="change-btn"
-								class="my-btn red-bg white-text full-w"
+								class="rounded border shadow-sm p-2 w-100 text-white red-bg"
 								type="button"
 							) Change
 					div(id="video-wrapper")
@@ -153,17 +148,17 @@ html
 					h3(class="remove-margin-bottom") Search YouTube
 					br
 					div(class="row")
-						div(class = "col-lg-6")
+						div(class = "col-lg-8")
 							input(
 								id="search-video"
-								class="input"
+								class="input p-2 rounded shadow-sm border"
 								type="text"
 								placeholder="Search text"
 							)
-						div(class = "col-lg-6")
+						div(class = "col-lg-4")
 							button(
 								id="search-btn"
-								class="my-btn red-bg white-text full-w"
+								class="rounded border shadow-sm p-2 w-100 text-white red-bg"
 								type="button"
 							) Search
 					div(id="video-search-results")
@@ -176,11 +171,7 @@ html
 	script(
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
 	)
-	script(
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-		crossorigin="anonymous"
-	)
+	include ../includes/bootstrap_js.pug
 	script(
 		src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"
 		integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0="

@@ -14,12 +14,7 @@ html
 			integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
 			crossorigin="anonymous"
 		)
-		link(
-			rel="stylesheet"
-			href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-			integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
-			crossorigin="anonymous"
-		)
+		include ../includes/bootstrap_css.pug
 		link(
 			rel = "stylesheet"
 			href = "/css/create_room.css"
@@ -37,18 +32,19 @@ html
 		div(id="creation-div")
 			div(class="container")
 				h3(
-					align="left"
+					class="text-center mb-5"
 				) Create new room
 				input(
 					readonly
 					id="room-code-input"
+					class = "p-2 rounded shadow-sm border"
 					type="text"
 					placeholder="Room code"
 				)
 				button(
 					id="generate-room-code"
 					type="button"
-					class="my-btn full-w red-bg white-text" 
+					class="rounded border shadow-sm p-2 w-100 text-white red-bg"
 				) Create a room!
 				div(id="after-creation")
 					div(id="room-qr-code")
@@ -57,11 +53,7 @@ html
 	script(
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
 	)
-	script(
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-		crossorigin="anonymous"
-	)
+	include ../includes/bootstrap_js.pug
 	script(
 		src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"
 		integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0="

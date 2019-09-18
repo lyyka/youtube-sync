@@ -14,12 +14,7 @@ html
 			integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
 			crossorigin="anonymous"
 		)
-		link(
-			rel="stylesheet"
-			href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-			integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
-			crossorigin="anonymous"
-		)
+		include ../includes/bootstrap_css.pug
 		link(
 			rel = "stylesheet"
 			href = "/css/join_room.css"
@@ -39,31 +34,29 @@ html
 			class="extended-section"
 		)
 			div(class="container")
-				h3(align="left") Join a room by choosing a username and entering the room key
+				h3(class = "text-center mb-5") Join a room
 				input(
 					id="username-input"
 					type="text"
+					class="p-2 rounded shadow-sm border"
 					placeholder="Username"
 				)
 				input(
 					id="room-code-input"
 					type="text"
+					class="p-2 rounded shadow-sm border"
 					placeholder="Room Code"
 					value = roomID
 				)
 				button(
 					id="join-room"
 					type="button"
-					class="my-btn full-w white-text red-bg"
+					class="rounded border shadow-sm p-2 w-100 text-white red-bg"
 				) Join Room
 	script(
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
 	)
-	script(
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-		crossorigin="anonymous"
-	)
+	include ../includes/bootstrap_js.pug
 	script(
 		src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"
 		integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0="
