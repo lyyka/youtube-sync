@@ -1,84 +1,91 @@
-let starting_url = "";
-let starting_time = 0;
-let starting_state = "paused";
+class Room{
 
-let video = {
-	playing: true,
-	duration: {
-		value: 0,
-		string: "00:00:00"
+	constructor(roomId, username){
+		this.roomId = roomId;
+		this.username = username;
+		this.starting_url = "";
+		this.starting_time = 0;
+		this.starting_state = "paused"
+
+		this.video = {
+			playing: true,
+			duration: {
+				value: 0,
+				string: "00:00:00"
+			}
+		}
+
+		this.was_buff = false;
+		this.interval = undefined;
+
+		this.socket = io();
+		this.socketEvents = new SocketEvents();
+		this.registerEvents = this.registerEvents.bind(this);
+		this.registerEvents();
 	}
+
+	registerEvents(){
+		this.socket.emit("join room", { username: this.username, room: this.roomId }, this.socketEvents.joinRoom);
+		
+		// when someone seeks, this function syncs everyone to that seek
+		this.socket.on("sync", this.socketEvents.onSync);
+
+		// when control is received
+		socket.on('control', this.socketEvents.onControl);
+
+		// notify users when someone joins
+		socket.on("joined", this.socketEvents.onJoined);
+
+		// notify users when someone leaves
+		socket.on("left", this.socketEvents.someoneLeft);
+
+		// when embed video is changed
+		socket.on("change embed url", this.socketEvents.embedURLChanged);
+
+		// receive video state change event
+		socket.on("video state change", fthis.socketEvents.videoStateChanged);
+	}
+
 }
 
-let was_buff = false;
-
-let interval;
-
-const socket = io();
-// join the user to the room
-socket.emit("join room",{username: user,room: room},function(data){
-	if(data.status == -1){
-		window.location.replace("/create");
-	}
-	if(data.status == 0){
-		window.location.replace("/join");
-	}
-	if(data.status == 1){
-		addNotification(data.message);
-		starting_url = data.videoUrl;
-		var users_list = data.usersList;
-		refreshUsersList(users_list);
-		starting_time = data.videoTime;
-		starting_state = data.state;
-		// load the qr code
-        const qrcode = new QRCode(document.getElementById("room-qr-code"), {
-            text: "http://you-sync.herokuapp.com/join/" + room,
-            width: 128,
-            height: 128,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
-        $("#room-qr-code").append('<h4 align = "left" class = "red-text">' + room + '</h4>')
-	}
-});
-
-// YOUTUBE API
+// room and user come from the .pug template where they are loaded from backend
+const roomClass = new Room(room, user);
 
 let player;
 function onYouTubeIframeAPIReady() {
 	const video_id = parseURL(starting_url);
 	player = new YT.Player('video', {
-	  height: '500',
-	  width: '100%',
-	  videoId: video_id,
-	  playerVars: {
-	  	rel: 0,
-	  	controls: 0,
-	  	autplay: 0,
-	  	disablekb: 1
-	  },
-	  events: {
-	    'onReady': onPlayerReady,
-	    'onStateChange': onPlayerStateChange
-	  }
+		height: '500',
+		width: '100%',
+		videoId: video_id,
+		playerVars: {
+			rel: 0,
+			controls: 0,
+			autplay: 0,
+			disablekb: 1
+		},
+		events: {
+			'onReady': onPlayerReady,
+			'onStateChange': onPlayerStateChange
+		}
 	});
 }
+
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
 	// bind event
-	$("#video-toggle").click(function(){
-		if(video.playing){
+	$("#video-toggle").click(function () {
+		if (video.playing) {
 			// emit event
-			socket.emit("pause video",{username:user,room:room},function(data){
-				addNotification(data.feedback,data.time);
+			socket.emit("pause video", { username: user, room: room }, function (data) {
+				addNotification(data.feedback, data.time);
 			});
 			pauseVideo();
 		}
-		else{
+		else {
 			// emit
-			socket.emit("play video",{username:user,room:room},function(data){
-				addNotification(data.feedback,data.time);
+			socket.emit("play video", { username: user, room: room }, function (data) {
+				addNotification(data.feedback, data.time);
 			});
 			playVideo();
 		}
@@ -87,132 +94,40 @@ function onPlayerReady(event) {
 	});
 	changeVideo(starting_url);
 	pauseVideo();
-	player.seekTo(starting_time,true);
+	player.seekTo(starting_time, true);
 }
 
-function onPlayerStateChange(event){
+function onPlayerStateChange(event) {
 	if (event.data == YT.PlayerState.PLAYING) {
-		if(was_buff){
-			socket.emit("play video",{username:user,room:room},function(data){
-				addNotification(data.feedback,data.time);
+		if (was_buff) {
+			socket.emit("play video", { username: user, room: room }, function (data) {
+				addNotification(data.feedback, data.time);
 			});
 			playVideo();
 			was_buff = false;
 		}
 		// set interval
 		setVideoDuration();
-      	interval = setInterval(updateVideoState, 1000);
-    }
+		interval = setInterval(updateVideoState, 1000);
+	}
 	if (event.data == YT.PlayerState.PAUSED) {
 		clearInterval(interval);
-    }
-    if(event.data == YT.PlayerState.BUFFERING){
-    	was_buff = true;
-    	socket.emit("pause video",{username:user,room:room},function(data){
-			addNotification(data.feedback,data.time);
+	}
+	if (event.data == YT.PlayerState.BUFFERING) {
+		was_buff = true;
+		socket.emit("pause video", { username: user, room: room }, function (data) {
+			addNotification(data.feedback, data.time);
 		});
-    }
+	}
 }
 
-// END YOUTUBE API
-
-// when someone seeks, this function syncs everyone to that seek
-socket.on('sync', function(data){
-	if(data.videoTime){
-		player.seekTo(data.videoTime, true);
-		playVideo();
-	}
-});
-// when control is received
-socket.on('control', function (data) {
-	let message = data.user;
-	if(data.control == "play"){
-		message += " played the video.";
-		playVideo();
-	}
-	if(data.control == "pause"){
-		message += " paused the video.";
-		pauseVideo();
-	}
-	addNotification(message,data.time);
-});
-// notify users when someone joins
-socket.on("joined",function(data){
-	addNotification(data.message,data.time);
-	refreshUsersList(data.users_list);
-});
-// notify users when someone leaves
-socket.on("left",function(data){
-	addNotification(data.message,data.time);
-	refreshUsersList(data.users_list);
-});
-// when embed video is changed
-socket.on("change embed url",function(data){
-	changeVideo(data.url);
-	playVideo();
-	const message = data.user + " changed video id to: " + parseURL(data.url);
-	addNotification(message,data.time);
-});
-// receive video state change event
-socket.on("video state change",function(data){
-	if(data.state != null){
-		player.seekTo(data.state,true);
-	}
-});
 $(document).ready(function(){
 	// set title
 	$("title").html("Room - " + room);
 	// search yt api
-	$("#search-btn").click(function(){
-		// reference
-		// https://developers.google.com/youtube/v3/docs/search/list#usage
-		//
-		const q = $("#search-video").val();
-		if(q != undefined && q.trim().length > 0){
-			$("#video-search-results").empty();
-			const search_request = $.get({
-				url: "https://www.googleapis.com/youtube/v3/search",
-				data: {
-					part: "snippet",
-					maxResults: 50,
-					q: q,
-					type: "video",
-					videoEmbeddable: "true",
-					videoSyndicated: "true",
-					key: "AIzaSyAayCuwKXQgIRrj2xB8WbReNj6lLffs1-A"
-				}
-			});
-			search_request.done(function(data){
-				data.items.forEach(search_result => {
-					
-					const thumbnail = search_result.snippet.thumbnails.default.url;
-					const title = search_result.snippet.title;
-					const channelTitle = search_result.snippet.channelTitle;
-					const videoId = search_result.id.videoId;
-
-					$("#video-search-results").append(
-						'<div class = "yt-search-result-card"><div class = "yt-search-result-card-inner"><img src = "' + thumbnail + '" class = "img-fluid" /><br /><h4>' + title + '</h4><p>' + channelTitle + '</p><input type = "text" class = "video-id-input hide" value = "' + videoId + '" /></div></div>'
-					);
-				});
-			});
-			search_request.fail(function(data){
-				$("#video-search-results").append("<h3 class = 'align-center'>Error</h3>");
-			});
-		}
-	});
+	$("#search-btn").click(searchYoutube);
 	// on click on search result card
-	$("#video-search-results").on("click", "div.yt-search-result-card", function(){
-		let videoId = $(this).find(".video-id-input").val();
-		if(videoId.length > 0){
-			videoId = "?v=" + videoId;
-			socket.emit("change url",{url: videoId, username: user, room: room},function(data){
-				addNotification(data.feedback,data.time);
-			});
-			changeVideo(videoId);
-			playVideo();
-			setVideoDuration();
-		}
-	});
+	$("#video-search-results").on("click", "div.yt-search-result-card", searchResultCardClicked);
 	// show time on mouse move
 	$("#video-slider").mousemove(function(e){
 		let offset = $(this).offset();
@@ -317,6 +232,59 @@ $(document).ready(function(){
 	    }
 	});
 });
+
+// YOUTUBE SEARCH
+
+function searchYoutube(e) {
+	// reference
+	// https://developers.google.com/youtube/v3/docs/search/list#usage
+	//
+	const q = $("#search-video").val();
+	if (q != undefined && q.trim().length > 0) {
+		$("#video-search-results").empty();
+		const search_request = $.get({
+			url: "https://www.googleapis.com/youtube/v3/search",
+			data: {
+				part: "snippet",
+				maxResults: 50,
+				q: q,
+				type: "video",
+				videoEmbeddable: "true",
+				videoSyndicated: "true",
+				key: "AIzaSyAayCuwKXQgIRrj2xB8WbReNj6lLffs1-A"
+			}
+		});
+		search_request.done(function (data) {
+			data.items.forEach(search_result => {
+
+				const thumbnail = search_result.snippet.thumbnails.default.url;
+				const title = search_result.snippet.title;
+				const channelTitle = search_result.snippet.channelTitle;
+				const videoId = search_result.id.videoId;
+
+				$("#video-search-results").append(
+					'<div class = "yt-search-result-card"><div class = "yt-search-result-card-inner"><img src = "' + thumbnail + '" class = "img-fluid" /><br /><h4>' + title + '</h4><p>' + channelTitle + '</p><input type = "text" class = "video-id-input hide" value = "' + videoId + '" /></div></div>'
+				);
+			});
+		});
+		search_request.fail(function (data) {
+			$("#video-search-results").append("<h3 class = 'align-center'>Error</h3>");
+		});
+	}
+}
+
+function searchResultCardClicked(e){
+	let videoId = $(this).find(".video-id-input").val();
+	if (videoId.length > 0) {
+		videoId = "?v=" + videoId;
+		socket.emit("change url", { url: videoId, username: user, room: room }, function (data) {
+			addNotification(data.feedback, data.time);
+		});
+		changeVideo(videoId);
+		playVideo();
+		setVideoDuration();
+	}
+}
 
 function playVideo(){
 	// change icon on control
