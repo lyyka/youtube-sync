@@ -1,11 +1,14 @@
 class Player{
     constructor(room) {
         this.room = room;
-        this.player = undefined;
+        this.YTPlayer = undefined;
         this.room.player = this;
 
         this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
         this.onPlayerReady = this.onPlayerReady.bind(this);
+        this.toggleVideo = this.toggleVideo.bind(this);
+        this.playVideo = this.playVideo.bind(this);
+        this.pauseVideo = this.pauseVideo.bind(this);
         this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
 
         this.updateVideoState = this.updateVideoState.bind(this);
@@ -39,14 +42,14 @@ class Player{
 
     onYouTubeIframeAPIReady() {
         const video_id = this.parseURL(this.room.starting_url);
-        this.player = new YT.Player('video', {
+        this.YTPlayer = new YT.Player('video', {
             height: '500',
             width: '100%',
             videoId: video_id,
             playerVars: {
                 rel: 0,
                 controls: 0,
-                autplay: 0,
+                autoplay: 0,
                 disablekb: 1
             },
             events: {
@@ -58,55 +61,55 @@ class Player{
     
     // 4. The API will call this function when the video player is ready.
     onPlayerReady(event) {
-        const room = this.room;
-        const outter_player = this;
         // bind event
-        $("#video-toggle").click(function () {
-            if (room.video.playing) {
-                // emit event
-                room.socketEvents.pauseVideo();
-                outter_player.pauseVideo();
-            }
-            else {
-                // emit
-                room.socketEvents.playVideo();
-                outter_player.playVideo();
-            }
-            room.video.playing = !room.video.playing;
-            // $(this).find("i.fas").toggleClass("fa-play fa-pause");
-        });
+        $("#video-toggle").click(this.toggleVideo);
         this.changeVideo(this.room.starting_url);
         this.pauseVideo();
-        this.player.seekTo(this.room.starting_time, true);
+        this.YTPlayer.seekTo(this.room.starting_time, true);
+    }
+
+    toggleVideo(event){
+        if (this.room.video.playing) {
+            // emit event
+            this.room.socketEvents.pauseVideo();
+            this.pauseVideo();
+        }
+        else {
+            // emit
+            this.room.socketEvents.playVideo();
+            this.playVideo();
+        }
+        this.room.video.playing = !this.room.video.playing;
     }
 
     playVideo(){
-        // change icon on control
-        $("#video-toggle").find("i.fas").removeClass("fa-play");
-        $("#video-toggle").find("i.fas").addClass("fa-pause");
-        // gets current time from server, if it is in front of current local time, it will seek to it.
-        const outter_player = this;
-        this.room.socket.emit("get video time",{room: this.room.roomId},function(data){
-            console.log("get video time callback");
-            
-            const seekTime = data.videoTime;
-            if(seekTime > outter_player.player.getCurrentTime()){
-                outter_player.player.seekTo(seekTime, true);
-                outter_player.player.playVideo();
-            }
-            else{
-                outter_player.player.playVideo();
-            }
-        });
+        if(this.YTPlayer != null){
+            // change icon on control
+            $("#video-toggle").find("i.fas").removeClass("fa-play");
+            $("#video-toggle").find("i.fas").addClass("fa-pause");
+            // gets current time from server, if it is in front of current local time, it will seek to it.
+            const outter_player = this;
+            // get video time from the server so the player syncs to the server time on each play
+            this.room.socket.emit("get video time",{room: this.room.roomId},function(data){
+                const seekTime = data.videoTime;
+                if(seekTime > outter_player.YTPlayer.getCurrentTime()){
+                    outter_player.YTPlayer.seekTo(seekTime, true);
+                    outter_player.YTPlayer.playVideo();
+                }
+                else{
+                    outter_player.YTPlayer.playVideo();
+                }
+            });
+        }
     }
 
     pauseVideo(){
-        console.log("video paused");
-        
-        // change icon
-        $("#video-toggle").find("i.fas").addClass("fa-play");
-        $("#video-toggle").find("i.fas").removeClass("fa-pause");
-        this.player.pauseVideo();
+       if(this.YTPlayer != null){
+            // change icon
+            $("#video-toggle").find("i.fas").addClass("fa-play");
+            $("#video-toggle").find("i.fas").removeClass("fa-pause");
+            this.YTPlayer.pauseVideo();
+       }
     }
     
     onPlayerStateChange(event) {
@@ -132,7 +135,7 @@ class Player{
     // update video state each second
     updateVideoState(){
         // get current time
-        const get_current_time = this.player.getCurrentTime();
+        const get_current_time = this.YTPlayer.getCurrentTime();
         const current_time = this.parseTime(get_current_time);
         let final = "";
         if(current_time.hours > 0){
@@ -146,12 +149,12 @@ class Player{
         // change time label
         $("#video-time").html(final + " / " + this.room.video.duration.string);
         // emit the updated time
-        this.room.socketEvents.updateVideoTime(this.player);
+        this.room.socketEvents.updateVideoTime(this.YTPlayer);
     }
 
     setVideoDuration(){
         // get the video duration
-        const getDuration  = this.player.getDuration();
+        const getDuration  = this.YTPlayer.getDuration();
         const duration = this.parseTime(getDuration);
         this.room.video.duration.value = getDuration; 
         this.room.video.duration.string = "";
@@ -166,8 +169,8 @@ class Player{
         let new_video_id = "";
         new_video_id = this.parseURL(videoUrlOrID);
         if(new_video_id.length > 0){
-            this.player.seekTo(0, true);
-            this.player.cueVideoById(new_video_id);
+            this.YTPlayer.seekTo(0, true);
+            this.YTPlayer.cueVideoById(new_video_id);
         }
     }
 

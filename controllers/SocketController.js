@@ -1,7 +1,7 @@
 class SocketController{
     constructor(){
         this.rooms = {};
-        this.starting_url = "https://www.youtube.com/watch?v=bM7SZ5SBzyY";
+        this.starting_url = "https://www.youtube.com/watch?v=EwRdKJURDHw";
         this.onEstablishedConnection = this.onEstablishedConnection.bind(this);
         this.registerEvents = this.registerEvents.bind(this);
         this.changeUrl = this.changeUrl.bind(this);

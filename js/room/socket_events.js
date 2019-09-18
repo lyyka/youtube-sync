@@ -18,6 +18,8 @@ class SocketEvents{
     }
 
     // EMITTERS
+
+    // when user first joings the room
     joinRoom(data){
         if (data.status == -1) {
             window.location.replace("/create");
@@ -28,8 +30,7 @@ class SocketEvents{
         if (data.status == 1) {
             this.room.addNotification(data.message);
             this.room.starting_url = data.videoUrl;
-            var users_list = data.usersList;
-            this.room.refreshUsersList(users_list);
+            this.room.refreshUsersList(data.usersList);
             this.room.starting_time = data.videoTime;
             this.room.starting_state = data.state;
             // load the qr code
@@ -41,14 +42,16 @@ class SocketEvents{
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
-            $("#room-qr-code").append('<h4 align = "left" class = "red-text">' + room + '</h4>')
+            $("#room-qr-code").append('<h4 align = "left" class = "red-text">' + room + '</h4>');
         }
     }
 
+    // when the browser closes or is refreshed
     userLeftRoom(){
 		this.socket.emit("leave room",{username: this.room.username, room: this.room.roomId});
     }
 
+    // emits play video cotnrol to the server which broadcasts control to all members
     playVideo(){
         const room = this.room;
         this.socket.emit("play video", { username: this.room.username, room: this.room.roomId }, function (data) {
@@ -56,6 +59,7 @@ class SocketEvents{
         });
     }
 
+    // emits pause video cotnrol to the server which broadcasts control to all members
     pauseVideo(){
         const room = this.room;
         this.socket.emit("pause video", { username: this.room.username, room: this.room.roomId }, function (data) {
@@ -63,6 +67,7 @@ class SocketEvents{
         });
     }
 
+    // updates video time on the server
     updateVideoTime(player){
         this.socket.emit("update video time",{videoTime: player.getCurrentTime(), room: this.room.roomId});
     }
@@ -70,36 +75,38 @@ class SocketEvents{
     // LISTENERS
     onSync(data){
         if (data.videoTime) {
-            player.seekTo(data.videoTime, true);
+            this.room.player.YTPlayer.seekTo(data.videoTime, true);
             this.room.player.playVideo();
         }
     }
 
+    // when someone plays/pauses the video, that control gets sent over the server to each room member
+    // this is a callback when a user receives the control from the server
     onControl(data){
         if (data.control == "play") {
-            console.log("play control");
-            
             data.user += " played the video.";
             this.room.player.playVideo();
         }
         if (data.control == "pause") {
-            console.log("pause control");
             data.user += " paused the video.";
             this.room.player.pauseVideo();
         }
         this.room.addNotification(data.user, data.time);
     }
 
+    // when user joins to the room
     onJoined(data){
         this.room.addNotification(data.message, data.time);
         this.room.refreshUsersList(data.users_list);
     }
 
+    // when user leaves the room
     someoneLeft(data){
         this.room.addNotification(data.message, data.time);
         this.room.refreshUsersList(data.users_list);
     }
 
+    // when the embed URL is changed
     embedURLChanged(data){
         this.room.player.changeVideo(data.url);
         this.room.player.playVideo();

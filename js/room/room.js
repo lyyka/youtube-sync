@@ -16,7 +16,6 @@ class Room{
 		}
 
 		this.was_buff = false;
-		this.interval = undefined;
 
 		this.socket = io();
 		this.socketEvents = new SocketEvents(this);
