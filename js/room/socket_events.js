@@ -14,12 +14,17 @@ class SocketEvents{
         this.onJoined = this.onJoined.bind(this);
         this.someoneLeft = this.someoneLeft.bind(this);
         this.embedURLChanged = this.embedURLChanged.bind(this);
-        this.videoStateChanged = this.videoStateChanged.bind(this);
+        // this.videoStateChanged = this.videoStateChanged.bind(this);
     }
 
-    // EMITTERS
+    // 
+    // ------------ EMITTERS ------------
+    //
 
-    // when user first joins the room
+    // when user joins, emits to the server to get room info
+    getRoomInfoOnJoin(){
+		this.socket.emit("join room", { username: this.room.username, room: this.room.roomId }, this.joinRoom);
+    }
     joinRoom(data){
         if (data.status == -1) {
             window.location.replace("/create");
@@ -69,8 +74,6 @@ class SocketEvents{
 
     // emit video time and room to sync on trackbar seek
     syncOnSeek(videoTime, room){
-        alert("Emit seek to " + videoTime);
-        
         this.socket.emit("sync on seek", {
             videoTime: videoTime,
             room: room
@@ -82,11 +85,13 @@ class SocketEvents{
         this.socket.emit("update video time",{videoTime: player.getCurrentTime(), room: this.room.roomId});
     }
 
-    // LISTENERS
+    // 
+    // ------------ LISTENERS ------------
+    //
 
+    // When sync event is issued from the server to update the video time
     onSync(data){
         if (data.videoTime) {
-            alert("Should sync to " + data.videoTime);
             this.room.player.YTPlayer.seekTo(data.videoTime, true);
             this.room.player.playVideo();
         }
@@ -106,19 +111,20 @@ class SocketEvents{
         this.room.addNotification(data.user, data.time);
     }
 
-    // when user joins to the room
+    // when user joins to the room, send notification to everybody
     onJoined(data){
         this.room.addNotification(data.message, data.time);
         this.room.refreshUsersList(data.users_list);
     }
 
-    // when user leaves the room
+    // when user leaves the room, send notification to everybody
     someoneLeft(data){
         this.room.addNotification(data.message, data.time);
         this.room.refreshUsersList(data.users_list);
     }
 
-    // when the embed URL is changed
+    // listens when server issues an event to change the URL
+    // sets the new url, plays video and adds a notification
     embedURLChanged(data){
         this.room.player.changeVideo(data.url);
         this.room.player.playVideo();
@@ -126,9 +132,9 @@ class SocketEvents{
         this.room.addNotification(message, data.time);
     }
 
-    videoStateChanged(data){
-        if (data.state != null) {
-            this.room.player.seekTo(data.state, true);
-        }
-    }
+    // videoStateChanged(data){
+    //     if (data.state != null) {
+    //         this.room.player.seekTo(data.state, true);
+    //     }
+    // }
 }

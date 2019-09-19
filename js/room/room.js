@@ -19,15 +19,14 @@ class Room{
 
 		this.socket = io();
 		this.socketEvents = new SocketEvents(this);
+		this.socketEvents.getRoomInfoOnJoin();
 		this.registerEvents = this.registerEvents.bind(this);
 		this.registerEvents();
 
 		this.refreshUsersList = this.refreshUsersList.bind(this);
 	}
 
-	registerEvents(){
-		this.socket.emit("join room", { username: this.username, room: this.roomId }, this.socketEvents.joinRoom);
-		
+	registerEvents(){		
 		// when someone seeks, this function syncs everyone to that seek
 		this.socket.on("sync", this.socketEvents.onSync);
 
@@ -44,7 +43,7 @@ class Room{
 		this.socket.on("change embed url", this.socketEvents.embedURLChanged);
 
 		// receive video state change event
-		this.socket.on("video state change", this.socketEvents.videoStateChanged);
+		// this.socket.on("video state change", this.socketEvents.videoStateChanged);
 	}
 
 	addNotification(text){

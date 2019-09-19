@@ -8,7 +8,7 @@ class YTSearch{
             let videoId = $(this).find(".video-id-input").val();
             if (videoId.length > 0) {
                 videoId = "?v=" + videoId;
-                room.socket.emit("change url", { url: videoId, username: user, room: room }, function (data) {
+                room.socket.emit("change url", { url: videoId, username: room.username, room: room.roomId }, function (data) {
                     room.addNotification(data.feedback, data.time);
                 });
                 room.player.changeVideo(videoId);
