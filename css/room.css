@@ -47,15 +47,15 @@
 	max-height: 600px;
 	overflow-y: auto;
 }
-.yt-search-result-card{
+/* .yt-search-result-card{
 	cursor: pointer;
 	margin-bottom: 20px;
 	box-shadow: 0px 0px 10px 1px #b3b3b3;
 	transition: all 0.3s ease-in-out;
-}
-.yt-search-result-card-inner{
-	padding: 7px;
-}
+} */
+/* .yt-search-result-card-inner{ */
+	/* padding: 7px; */
+/* } */
 /*video-wrapper and video heights must match!!!*/
 #video-wrapper{
 	/* text-align: center; */

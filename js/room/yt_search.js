@@ -48,10 +48,51 @@ class YTSearch{
                     const title = search_result.snippet.title;
                     const channelTitle = search_result.snippet.channelTitle;
                     const videoId = search_result.id.videoId;
-    
-                    $("#video-search-results").append(
-                        '<div class = "yt-search-result-card"><div class = "yt-search-result-card-inner"><img src = "' + thumbnail + '" class = "img-fluid" /><br /><h4>' + title + '</h4><p>' + channelTitle + '</p><input type = "text" class = "video-id-input hide" value = "' + videoId + '" /></div></div>'
-                    );
+
+                    // main wrapper
+                    const card = $("<div></div>", {
+                        class: "yt-search-result-card cursor-pointer p-3 mb-2 bg-white shadow-sm border rounded"
+                    });
+                    // whole row
+                    const row = $("<div></div>", {
+                        class: "row"
+                    });
+                    // image column
+                    const img_col = $("<div></div>", {
+                        class: "col-lg-4"
+                    })
+                    const thumbnail_img = $("<img/>", {
+                        src: thumbnail,
+                        class: "img-fluid"
+                    });
+                    img_col.append(thumbnail_img)
+                    // text column
+                    const text_column = $("<div></div>", {
+                        class: "col-lg-8"
+                    });
+                    const video_id_input = $("<input/>", {
+                        type: "hidden",
+                        class: "video-id-input",
+                        value: videoId
+                    });
+                    const title_text = $("<h5></h5>", {
+                        class: "text-break"
+                    });
+                    const substringed_title = title.length > 30 ? (title.substring(0, 30) + "...") : title;
+                    title_text.text(substringed_title);
+                    const channel_title = $("<p></p>", {
+                        class: "text-break"
+                    });
+                    channel_title.text(channelTitle);
+                    text_column.append(video_id_input);
+                    text_column.append(title_text);
+                    text_column.append(channel_title);
+
+                    row.append(img_col);
+                    row.append(text_column);
+                    card.append(row);
+
+                    $("#video-search-results").append(card);
                 });
                 $("#yt-search-loading-wrapper").hide();
             });
