@@ -119,20 +119,18 @@ html
 						i(class= "fas fa-link mr-3")
 						span Choose video
 					br
-					div(class="row")
-						div(class = "col-lg-10")
-							input(
-								id="embed-url"
-								class="input p-2 rounded shadow-sm border"
-								type="text"
-								placeholder="Video URL"
-							)
-						div(class = "col-lg-2")
-							button(
-								id="change-btn"
-								class="rounded border shadow-sm p-2 w-100 text-white red-bg"
-								type="button"
-							) Change
+					div(class = "position-relative")
+						input(
+							id="embed-url"
+							class="input p-2 m-0 rounded shadow-sm border"
+							type="text"
+							placeholder="Video URL"
+						)
+						button(
+							id="change-btn"
+							class="rounded-right button-over-input border shadow-sm p-2 text-white red-bg"
+							type="button"
+						) Change
 					div(id="video-wrapper")
 						div(id="video")
 						div(id="yt-block")
@@ -153,20 +151,19 @@ html
 						i(class="fab fa-youtube mr-3")
 						span Search YouTube
 					br
-					div(class="row")
-						div(class = "col-lg-8")
-							input(
-								id="search-video"
-								class="input p-2 rounded shadow-sm border"
-								type="text"
-								placeholder="Search text"
-							)
-						div(class = "col-lg-4")
-							button(
-								id="search-btn"
-								class="rounded border shadow-sm p-2 w-100 text-white red-bg"
-								type="button"
-							) Search
+					div(class = "position-relative")
+						input(
+							id="search-video"
+							class="input p-2 m-0 rounded shadow-sm border"
+							type="text"
+							placeholder="Search text"
+						)
+						button(
+							id="search-btn"
+							class="rounded-right button-over-input border shadow-sm py-2 px-3 text-white red-bg"
+							type="button"
+						)
+							i(class="fas fa-search")
 					div(id="video-search-results" class = "position-relative")
 						div(id = "yt-search-loading-wrapper")
 							div(id="yts-loading-animation")

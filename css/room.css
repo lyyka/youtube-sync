@@ -15,6 +15,12 @@
 	display: none;
 }
 /* search results */
+.button-over-input{
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100%;
+}
 #yt-search-loading-wrapper{
 	top: 0;
 	left: 0;
@@ -46,9 +52,6 @@
 	margin-bottom: 20px;
 	box-shadow: 0px 0px 10px 1px #b3b3b3;
 	transition: all 0.3s ease-in-out;
-}
-.yt-search-result-card:hover{
-	transform: scale(1.02);
 }
 .yt-search-result-card-inner{
 	padding: 7px;
