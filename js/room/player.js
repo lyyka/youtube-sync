@@ -64,7 +64,7 @@ class Player{
         // bind event
         $("#video-toggle").click(this.toggleVideo);
         this.changeVideo(this.room.starting_url);
-        this.pauseVideo();
+        // this.pauseVideo();
         this.YTPlayer.seekTo(this.room.starting_time, true);
     }
 
@@ -128,7 +128,7 @@ class Player{
         }
         if (event.data == YT.PlayerState.BUFFERING) {
             this.room.was_buff = true;
-            this.room.socketEvents.pauseVideo();
+            // this.room.socketEvents.pauseVideo();
         }
     }
 

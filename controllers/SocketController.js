@@ -96,6 +96,8 @@ class SocketController{
         if (this.rooms[data.room]) {
             // update time in room
             this.rooms[data.room].currTime = data.videoTime;
+            console.log(data.room + " synced to " + data.videoTime);
+            
             this.socket.broadcast.to(data.room).emit("sync", {
                 videoTime: data.videoTime
             });

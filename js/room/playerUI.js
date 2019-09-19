@@ -72,12 +72,14 @@ class PlayerUI{
         let left = Math.abs(e.pageX - offset.left);
         let totalWidth = $("#video-slider").width();
         let percentage = ( left / totalWidth );
-        this.player.room.socket.emit("sync on seek",{
-            videoTime: this.player.room.video.duration.value * percentage,
-            room: this.player.room.roomId
-        });
+        this.player.pauseVideo();
         this.player.YTPlayer.seekTo(this.player.room.video.duration.value * percentage, true);
-        this.player.playVideo();
+        this.player.room.socketEvents.syncOnSeek(this.player.room.video.duration.value * percentage, this.player.room.roomId);
+        // this.player.playVideo();
+        // this.player.room.socket.emit("sync on seek",{
+            // videoTime: this.player.room.video.duration.value * percentage,
+            // room: this.player.room.roomId
+        // });
         this.player.interval = setInterval(this.player.updateVideoState, 1000);
     }
 

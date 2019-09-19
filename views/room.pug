@@ -31,9 +31,9 @@ html
 		)
 	body
 		//- navigation is different for when in room
-		nav(id="navigation")
+		nav(id="navigation" class="py-2")
 			div(
-				class="container-fluid"
+				class="container-fluid pb-2 shadow-sm border-bottom"
 				id="navigation-inner"
 			)
 				div(id="nav-logo")
@@ -49,6 +49,7 @@ html
 						li(class="nav-item")
 							a(
 								href="#notifications"
+								class = "h6"
 								id="show-notify"
 							)
 								i(
@@ -59,6 +60,7 @@ html
 						li(class="nav-item")
 							a(
 								href="#usersList"
+								class = "h6"
 								id="show-users"
 							)
 								i(
@@ -142,7 +144,7 @@ html
 									id="video-toggle"
 									type="button"
 								)
-									i(class="fas fa-pause")
+									i(class="fas fa-play")
 								label(id="video-time") video time
 				div(class="col-xl-4")
 					h3(class="remove-margin-bottom") Search YouTube
@@ -161,7 +163,14 @@ html
 								class="rounded border shadow-sm p-2 w-100 text-white red-bg"
 								type="button"
 							) Search
-					div(id="video-search-results")
+					div(id="video-search-results" class = "position-relative")
+						div(id = "yt-search-loading-wrapper")
+							div(id="yts-loading-animation")
+								div(class = "lds-ring")
+									div
+									div
+									div
+									div
 						h3(id="start-searching-text") Start searching for a video...
 		//- footer is different for when in room
 		footer

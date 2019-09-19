@@ -19,7 +19,7 @@ class SocketEvents{
 
     // EMITTERS
 
-    // when user first joings the room
+    // when user first joins the room
     joinRoom(data){
         if (data.status == -1) {
             window.location.replace("/create");
@@ -67,14 +67,26 @@ class SocketEvents{
         });
     }
 
+    // emit video time and room to sync on trackbar seek
+    syncOnSeek(videoTime, room){
+        alert("Emit seek to " + videoTime);
+        
+        this.socket.emit("sync on seek", {
+            videoTime: videoTime,
+            room: room
+        });
+    }
+
     // updates video time on the server
     updateVideoTime(player){
         this.socket.emit("update video time",{videoTime: player.getCurrentTime(), room: this.room.roomId});
     }
 
     // LISTENERS
+
     onSync(data){
         if (data.videoTime) {
+            alert("Should sync to " + data.videoTime);
             this.room.player.YTPlayer.seekTo(data.videoTime, true);
             this.room.player.playVideo();
         }

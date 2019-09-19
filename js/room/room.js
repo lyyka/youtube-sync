@@ -8,7 +8,7 @@ class Room{
 		this.starting_state = "paused"
 
 		this.video = {
-			playing: true,
+			playing: false,
 			duration: {
 				value: 0,
 				string: "00:00:00"
