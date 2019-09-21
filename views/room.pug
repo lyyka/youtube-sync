@@ -16,12 +16,7 @@ html
 			crossorigin="anonymous"
 		)
 		//- bootstrap
-		link(
-			rel="stylesheet"
-			href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-			integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
-			crossorigin="anonymous"
-		)
+		include ../includes/bootstrap_css.pug
 		link(
 			rel = "stylesheet"
 			href = "/css/room.css"
@@ -36,9 +31,9 @@ html
 		)
 	body
 		//- navigation is different for when in room
-		nav(id="navigation")
+		nav(id="navigation" class="py-2")
 			div(
-				class="container-fluid"
+				class="container-fluid pb-2 shadow-sm border-bottom"
 				id="navigation-inner"
 			)
 				div(id="nav-logo")
@@ -54,6 +49,7 @@ html
 						li(class="nav-item")
 							a(
 								href="#notifications"
+								class = "h6"
 								id="show-notify"
 							)
 								i(
@@ -64,6 +60,7 @@ html
 						li(class="nav-item")
 							a(
 								href="#usersList"
+								class = "h6"
 								id="show-users"
 							)
 								i(
@@ -73,7 +70,7 @@ html
 								| &nbsp;Users
 						li(class="nav-item")
 							a(
-								class="white-text red-bg nav-button"
+								class="text-white red-bg nav-button"
 								href="/join"
 								id = "leave-room"
 							) Leave room
@@ -84,11 +81,11 @@ html
 		)
 			div(class="container")
 				p(align="right")
-					span(class="white-text cursor-pointer ws-div-control close-ws-div")
+					span(class="text-white cursor-pointer ws-div-control close-ws-div")
 						i(class="fas fa-times") 
 						| &nbsp;Close
 					span(
-						class="white-text cursor-pointer ws-div-control"
+						class="text-white cursor-pointer ws-div-control"
 						id="clear-all-notifications"
 					)
 						i(class="fas fa-broom") 
@@ -104,7 +101,7 @@ html
 		)
 			div(class="container")
 				p(align="right")
-					span(class="white-text cursor-pointer ws-div-control close-ws-div")
+					span(class="text-white cursor-pointer ws-div-control close-ws-div")
 						i(class="fas fa-times")
 						| &nbsp;Close
 			div(
@@ -118,22 +115,22 @@ html
 					h3(
 						align="left"
 						class="remove-margin-bottom black-text"
-					) Choose video
+					)
+						i(class= "fas fa-link mr-3")
+						span Choose video
 					br
-					div(class="row")
-						div(class = "col-lg-10")
-							input(
-								id="embed-url"
-								class="input"
-								type="text"
-								placeholder="Video URL"
-							)
-						div(class = "col-lg-2")
-							button(
-								id="change-btn"
-								class="my-btn red-bg white-text full-w"
-								type="button"
-							) Change
+					div(class = "position-relative")
+						input(
+							id="embed-url"
+							class="input p-2 m-0 rounded shadow-sm border"
+							type="text"
+							placeholder="Video URL"
+						)
+						button(
+							id="change-btn"
+							class="rounded-right button-over-input border shadow-sm p-2 text-white red-bg"
+							type="button"
+						) Change
 					div(id="video-wrapper")
 						div(id="video")
 						div(id="yt-block")
@@ -147,26 +144,34 @@ html
 									id="video-toggle"
 									type="button"
 								)
-									i(class="fas fa-pause")
+									i(class="fas fa-play")
 								label(id="video-time") video time
 				div(class="col-xl-4")
-					h3(class="remove-margin-bottom") Search YouTube
+					h3(class="remove-margin-bottom") 
+						i(class="fab fa-youtube mr-3")
+						span Search YouTube
 					br
-					div(class="row")
-						div(class = "col-lg-6")
-							input(
-								id="search-video"
-								class="input"
-								type="text"
-								placeholder="Search text"
-							)
-						div(class = "col-lg-6")
-							button(
-								id="search-btn"
-								class="my-btn red-bg white-text full-w"
-								type="button"
-							) Search
-					div(id="video-search-results")
+					div(class = "position-relative")
+						input(
+							id="search-video"
+							class="input p-2 m-0 rounded shadow-sm border"
+							type="text"
+							placeholder="Search text"
+						)
+						button(
+							id="search-btn"
+							class="rounded-right button-over-input border shadow-sm py-2 px-3 text-white red-bg"
+							type="button"
+						)
+							i(class="fas fa-search")
+					div(id="video-search-results" class = "position-relative")
+						div(id = "yt-search-loading-wrapper")
+							div(id="yts-loading-animation")
+								div(class = "lds-ring")
+									div
+									div
+									div
+									div
 						h3(id="start-searching-text") Start searching for a video...
 		//- footer is different for when in room
 		footer
@@ -176,11 +181,7 @@ html
 	script(
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
 	)
-	script(
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-		integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-		crossorigin="anonymous"
-	)
+	include ../includes/bootstrap_js.pug
 	script(
 		src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"
 		integrity="sha256-Thm9kMI2BQKxVnCWipQIGeb8QVl2lohO+WWWfCiF8b0="
@@ -193,7 +194,22 @@ html
 		const room = "#{roomID}";
 		const user = "#{username}";
 	script(
-		src="/js/room.js"
+		src="/js/room/socket_events.js"
+	)
+	script(
+		src="/js/room/player.js"
+	)
+	script(
+		src="/js/room/playerUI.js"
+	)
+	script(
+		src="/js/room/room.js"
+	)
+	script(
+		src="/js/room/yt_search.js"
+	)
+	script(
+		src="/js/room_holder.js"
 	)
 	script(
 		src="/js/qrcode.min.js"

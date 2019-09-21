@@ -1,5 +1,5 @@
 body{
-  padding-top: 100px;
+  padding-top: 49px;
 }
 #navigation{
   position: absolute;
@@ -7,7 +7,7 @@ body{
   left: 0;
   width: 100%;
   z-index: 1000;
-	padding: 15px 0px;
+	/* padding: 15px 0px; */
   background-color: white;
 }
 #navigation > #navigation-inner{
@@ -21,7 +21,6 @@ body{
 	display: inline-block;
 }
 #nav-list-wrapper{
-	padding: 7.5px 0px;
 	float: right;
   background-color: white !important;
 }
