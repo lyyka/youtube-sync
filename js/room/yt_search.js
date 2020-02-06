@@ -38,7 +38,7 @@ class YTSearch{
                     type: "video",
                     videoEmbeddable: "true",
                     videoSyndicated: "true",
-                    key: "AIzaSyAayCuwKXQgIRrj2xB8WbReNj6lLffs1-A"
+                    key: "no-key-:("
                 }
             });
             search_request.done(function (data) {
